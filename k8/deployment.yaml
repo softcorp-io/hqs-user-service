@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
     name: hqs-user-service
 spec:
-    replicas: 1
+    replicas: 2
     selector:
       matchLabels:
         app: hqs-user-service
@@ -19,7 +19,7 @@ spec:
               imagePullPolicy: Always
               volumeMounts: 
               - name: image-storage
-                mountPath: /tmp
+                mountPath: ./tmp
               ports:
                 - containerPort: 9000
               envFrom:

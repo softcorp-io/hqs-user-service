@@ -19,6 +19,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Go Test Handler
+      run: go test ./testdev/handlertest/... -v
+      working-directory: app
+
+    - name: Go Test Service
+      run: go test ./testdev/servicetest/... -v
+      working-directory: app
+
+
     # Setup gcloud CLI
     - uses: google-github-actions/setup-gcloud@v0.2.0
       with:

@@ -1,0 +1,5 @@
+2020/10/25 18:08:56 Warning: Test.UpdateAllowances.Speed Could not update user with err rpc error: code = Unavailable desc = connection error: desc = "transport: failed to write client preface: write tcp 127.0.0.1:61042->127.0.0.1:9091: write: broken pipe"
+2020/10/25 18:08:58 Warning: Test.UpdateAllowances.Speed Could not update user with err rpc error: code = Unavailable desc = connection closed
+2020/10/25 18:08:58 Warning: Test.UpdateAllowances.Speed Could not update user with err rpc error: code = Unavailable desc = connection closed
+2020/10/25 18:08:58 Warning: Test.UpdateAllowances.Speed Could not update user with err rpc error: code = Unavailable desc = connection closed
+2020/10/25 18:08:58 We applied: 500 clients in 2.567662742s which results in an average time of: 5.134000 milliseconds

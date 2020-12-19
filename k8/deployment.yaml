@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: hqs-user-service
+spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: hqs-user-service
+    template:
+        metadata:
+          name: hqs-user-service
+          labels:
+            app: hqs-user-service
+        spec:
+          containers:
+            - name: hqs-user-service
+              image: gcr.io/softcorp-hqs/hqs/hqs_user_service:v0.0.16
+              imagePullPolicy: Always
+              volumeMounts: 
+              - name: image-storage
+                mountPath: /tmp
+              ports:
+                - containerPort: 9000
+              envFrom:
+              - secretRef:
+                  name: hqs-user-service-secret
+          volumes:
+          - name: image-storage
+            emptyDir: {}

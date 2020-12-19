@@ -1,0 +1,4 @@
+**/Makefile
+/tmp/*.rdb
+**/.DS_Store
+**/*.env

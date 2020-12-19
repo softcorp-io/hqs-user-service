@@ -1,0 +1,80 @@
+name: Build, Test and Deploy to GKE On Tag
+
+on:
+  push:
+    tags:
+      - v*
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: softcorp-hqs-cluster
+  GKE_ZONE: europe-west1-b 
+  DEPLOYMENT_NAME: hqs-user-service
+  DEPLOYMENT_FILE: deployment.yaml
+  IMAGE: hqs-user-service
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Set env
+      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+   
+    - name: Print env
+      run: |
+        echo $RELEASE_VERSION
+        echo ${{ env.RELEASE_VERSION }}
+    
+    - name: Go Test Handler
+      run: go test ./testdev/handlertest/... -v
+      working-directory: app
+
+    - name: Go Test Service
+      run: go test ./testdev/servicetest/... -v
+      working-directory: app
+
+    # Setup gcloud CLI
+    - uses: google-github-actions/setup-gcloud@v0.2.0
+      with:
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT }}
+
+    # Configure Docker to use the gcloud command-line tool as a credential
+    # helper for authentication
+    - run: |-
+        gcloud --quiet auth configure-docker
+
+    # Get the GKE credentials so we can deploy to the cluster
+    - uses: google-github-actions/get-gke-credentials@v0.2.1
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_ZONE }}
+        credentials: ${{ secrets.GKE_SA_KEY }}
+    
+    # Build the Docker image
+    - name: Build
+      working-directory: app
+      run: |-
+        docker build \
+          --tag "gcr.io/$PROJECT_ID/$IMAGE:$RELEASE_VERSION" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          .
+    
+    # Push the Docker image to Google Container Registry
+    - name: Publish
+      run: |-
+        docker push "gcr.io/$PROJECT_ID/$IMAGE:$RELEASE_VERSION"
+
+    # Deploy the Docker image to the GKE cluster
+    - name: Deploy
+      run: |-
+        kubectl apply -f .
+        kubectl set image $IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$RELEASE_VERSION -f $DEPLOYMENT_FILE
+        kubectl rollout status deployment/$DEPLOYMENT_NAME
+        kubectl get services -o wide
+      working-directory: k8

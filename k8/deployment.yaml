@@ -44,4 +44,4 @@ spec:
           - name: images-storage
             hostPath: 
             path: ./tmp  # directory to tmp image folder
-            type: Director
+            type: Directory

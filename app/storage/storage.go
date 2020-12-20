@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -48,25 +49,32 @@ func (s *SpaceStorage) Upload(data bytes.Buffer, filePath string, allowedTypes .
 	}
 
 	// create a temporary file which we delete when we're done
-	tmpFilePath := "./tmp/profileImage.png"
+	tmpFilePath, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	tmpFilePath += "/tmp/profileImage.png"
+	// print the directory
+	log.Printf("The path to te tmp directory is: %s", tmpFilePath)
 	file, err := os.Create(tmpFilePath)
 	defer os.Remove(tmpFilePath)
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 	file.Write(data.Bytes())
-	file.Close()
-	/*
-		uploadFile, err := os.Open(tmpFilePath)
-		if err != nil {
-			return err
-		}
-		defer uploadFile.Close()
-	*/
+
+	// find uploadfile
+	uploadFile, err := os.Open(tmpFilePath)
+	if err != nil {
+		return err
+	}
+	defer uploadFile.Close()
+
 	object := s3.PutObjectInput{
 		Bucket: aws.String("hqs-spaces"),
 		Key:    aws.String(filePath),
-		Body:   file,
+		Body:   uploadFile,
 		ACL:    aws.String("private"),
 	}
 

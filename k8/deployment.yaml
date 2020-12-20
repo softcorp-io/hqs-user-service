@@ -19,7 +19,7 @@ spec:
               imagePullPolicy: Always
               volumeMounts: 
               - name: image-storage
-                mountPath: ./tmp
+                mountPath: ./app/tmp
               ports:
                 - containerPort: 9000
               env: 

@@ -23,19 +23,19 @@ spec:
               ports:
                 - containerPort: 9000
               env: 
-              - name: MONGO_DBNAME
-                value: hqs_user_test
-              - name: MONGO_DB_USER_COLLECTION
-                value: users
-              - name: MONGO_DB_AUTH_COLLECTION
-                value: auth_history
-              - name: MONGO_DB_TOKEN_COLLECTION
-                value: token_history
-              - name: AUTH_HISTORY_TTL
-                value: 168h
-              - name: TOKEN_TTL
-                value: 24h
-              - name: SERVICE_PORT
+              - name: "MONGO_DBNAME"
+                value: "hqs_user_test"
+              - name: "MONGO_DB_USER_COLLECTION"
+                value: "users"
+              - name: "MONGO_DB_AUTH_COLLECTION"
+                value: "auth_history"
+              - name: "MONGO_DB_TOKEN_COLLECTION"
+                value: "token_history"
+              - name: "AUTH_HISTORY_TTL"
+                value: "168h"
+              - name: "TOKEN_TTL"
+                value: "24h"
+              - name: "SERVICE_PORT"
                 value: "9000"
               envFrom:
               - secretRef:

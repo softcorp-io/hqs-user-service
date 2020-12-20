@@ -54,20 +54,19 @@ func (s *SpaceStorage) Upload(data bytes.Buffer, filePath string, allowedTypes .
 	if err != nil {
 		return err
 	}
-
 	file.Write(data.Bytes())
 	file.Close()
-
-	uploadFile, err := os.Open(tmpFilePath)
-	if err != nil {
-		return err
-	}
-	defer uploadFile.Close()
-
+	/*
+		uploadFile, err := os.Open(tmpFilePath)
+		if err != nil {
+			return err
+		}
+		defer uploadFile.Close()
+	*/
 	object := s3.PutObjectInput{
 		Bucket: aws.String("hqs-spaces"),
 		Key:    aws.String(filePath),
-		Body:   uploadFile,
+		Body:   file,
 		ACL:    aws.String("private"),
 	}
 

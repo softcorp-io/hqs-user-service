@@ -41,5 +41,7 @@ spec:
               - secretRef:
                   name: hqs-user-service-secret
           volumes:
-          - name: image-storage
-            emptyDir: {}
+          - name: images-storage
+            hostPath: 
+            path: ./tmp  # directory to tmp image folder
+            type: Director

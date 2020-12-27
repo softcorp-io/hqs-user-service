@@ -239,6 +239,12 @@ func (s *Handler) Get(ctx context.Context, req *proto.User) (*proto.Response, er
 		return &proto.Response{}, err
 	}
 
+	// the root user cannot be seen
+	if user.Admin {
+		s.zapLog.Error("Tried to get root user")
+		return &proto.Response{}, errors.New("Root user is not getable")
+	}
+
 	// set user image
 	imageURL, err := s.storage.Get(user.Image, time.Hour*1)
 	if err != nil {
@@ -432,9 +438,15 @@ func (s *Handler) UpdateProfile(ctx context.Context, req *proto.User) (*proto.Re
 		return &proto.Response{}, errors.New("The user is blocked")
 	}
 
+	// the root user cannot be seen
+	if actualUser.Admin {
+		s.zapLog.Error("Tried to update root user")
+		return &proto.Response{}, errors.New("Root user is not updateable")
+	}
+
 	resultUser := repository.MarshalUser(req)
 
-	// give user the id from the toke
+	// give user the id from the token
 	resultUser.ID = actualUser.ID
 
 	if err := s.repository.UpdateProfile(ctx, resultUser); err != nil {
@@ -480,6 +492,19 @@ func (s *Handler) UpdateAllowances(ctx context.Context, req *proto.User) (*proto
 
 	resultUser := repository.MarshalUser(req)
 
+	// validate that user actually exists & that reqUser is no admin
+	reqUser, err := s.repository.Get(ctx, resultUser)
+	if err != nil {
+		s.zapLog.Error(fmt.Sprintf("Could not get reqUser with err  %v", err))
+		return &proto.Response{}, err
+	}
+
+	// the root user cannot be updated
+	if reqUser.Admin {
+		s.zapLog.Error("Tried to update root user")
+		return &proto.Response{}, errors.New("Root user is not updateable")
+	}
+
 	// a user cannot update his/her own allowances if he/she do not
 	// both have permission and create access
 	if actualUser.ID == resultUser.ID && !(actualUser.AllowView && actualUser.AllowCreate) {
@@ -523,6 +548,12 @@ func (s *Handler) UpdatePassword(ctx context.Context, req *proto.UpdatePasswordR
 	if actualUser.Blocked {
 		s.zapLog.Error("The user is blocked")
 		return &proto.Response{}, errors.New("The user is blocked")
+	}
+
+	// the root user cannot be updated
+	if actualUser.Admin {
+		s.zapLog.Error("Tried to update root user")
+		return &proto.Response{}, errors.New("Root user is not updateable")
 	}
 
 	// validate that the user remembers his/her old password
@@ -590,6 +621,19 @@ func (s *Handler) UpdateBlockUser(ctx context.Context, req *proto.User) (*proto.
 		return &proto.Response{}, errors.New("The user is blocked")
 	}
 
+	// validate that user actually exists & that reqUser is no admin
+	reqUser, err := s.repository.Get(ctx, repository.MarshalUser(req))
+	if err != nil {
+		s.zapLog.Error(fmt.Sprintf("Could not get reqUser with err  %v", err))
+		return &proto.Response{}, err
+	}
+
+	// the root user cannot be updated
+	if reqUser.Admin {
+		s.zapLog.Error("Tried to update root user")
+		return &proto.Response{}, errors.New("Root user is not updateable")
+	}
+
 	// check allowances
 	if !actualUser.AllowBlock {
 		s.zapLog.Error("User is not allowed to block or unblock other users")
@@ -642,7 +686,13 @@ func (s *Handler) UploadImage(stream proto.UserService_UploadImageServer) error 
 	// check if the user is blocked
 	if actualUser.Blocked {
 		s.zapLog.Error("The user is blocked")
-		errors.New("The user is blocked")
+		return errors.New("The user is blocked")
+	}
+
+	// the root user cannot be updated
+	if actualUser.Admin {
+		s.zapLog.Error("Tried to update root user")
+		return errors.New("Root user is not updateable")
 	}
 
 	maxSize := 1 << 40
@@ -740,6 +790,12 @@ func (s *Handler) Delete(ctx context.Context, req *proto.User) (*proto.Response,
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not get deleteUser with err  %v", err))
 		return &proto.Response{}, err
+	}
+
+	// the root user cannot be deleted
+	if deleteUser.Admin {
+		s.zapLog.Error("Tried to delete root user")
+		return &proto.Response{}, errors.New("Root user is not deletable")
 	}
 
 	// Delete the user

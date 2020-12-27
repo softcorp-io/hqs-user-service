@@ -2,7 +2,7 @@
 
 ## Overview
 
-HQS User Service is a microservice part of the HQS Platform. The service is respnsible for creating, updating, deleting and validating users. It's build using an GRPC architecture and uses a Mongo database for storing users and tracking & blocking JWT tokens as well as storing a history of login attempts. For storage, we currently use DigitalOcean Spaces, but are looking to move to Caddy or Nginx. We'we made a few speed tests, which you can find under expiriments. The service is tested on a macbook pro with 16 gb of ram and a quad core i7 proccessor. 
+Hqs User Service is a microservice part of the hqs platform. The service is respnsible for creating, updating, deleting and validating users. It's build using an GRPC architecture and uses a Mongo database for storing users and tracking & blocking JWT tokens as well as storing a history of login attempts. For storage, we currently use DigitalOcean Spaces, but are looking to move to Caddy or Nginx. We'we made a few speed tests, which you can find under expiriments. The service is tested on a macbook pro with 16 gb of ram and a quad core i7 proccessor. 
 
 
 ## Functions

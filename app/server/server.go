@@ -140,14 +140,11 @@ func Run(zapLog *zap.Logger, wg *sync.WaitGroup) {
 
 func createRoot(zapLog *zap.Logger, repo *repository.MongoRepository) error {
 	ctx := context.Background()
-	users, err := repo.GetAll(ctx)
-	if err != nil {
-		return err
-	}
-	if len(users) > 0 {
-		zapLog.Info("One or more users already exists in users table")
+	if err := repo.GetRoot(ctx); err == nil {
+		zapLog.Info("A root user already exist")
 		return nil
 	}
+
 	rootPassword := generateRandomPassword()
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(rootPassword), bcrypt.DefaultCost)
 	if err != nil {
@@ -156,20 +153,22 @@ func createRoot(zapLog *zap.Logger, repo *repository.MongoRepository) error {
 	}
 	rootEmail := "root@softcorp.io"
 	rootUser := &repository.User{
-		Name:            "Temporary Root User",
+		Name:            "Root User",
 		Email:           rootEmail,
-		Phone:           "+4522122798",
+		Phone:           "+4500000000",
 		CountryCode:     "DK",
 		DialCode:        "+45",
-		Description:     "This is a temporary root user used for testing the system.",
+		Description:     "This is a special root user.",
 		Gender:          false,
 		Password:        string(hashedPass),
 		AllowView:       true,
 		AllowCreate:     true,
 		AllowPermission: true,
 		AllowDelete:     true,
+		AllowBlock:      true,
+		Admin:           true,
 	}
-	if err := repo.Create(ctx, rootUser); err != nil {
+	if err := repo.CreateRoot(ctx, rootUser); err != nil {
 		zapLog.Fatal(fmt.Sprintf("Could not create root user with err %v", err))
 		return err
 	}

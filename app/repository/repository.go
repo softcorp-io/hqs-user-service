@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"log"
 	"strings"
 	"time"
 	"unicode"
@@ -36,6 +37,7 @@ type User struct {
 	AllowDelete     bool      `bson:"allow_delete" json:"allow_delete"`
 	AllowBlock      bool      `bson:"allow_block" json:"allow_block"`
 	Blocked         bool      `bson:"blocked" json:"blocked"`
+	Admin           bool      `bson:"admin" json:"admin"`
 	CreatedAt       time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt       time.Time `bson:"updated_at" json:"updated_at"`
 }
@@ -48,9 +50,11 @@ type Upload struct {
 // Repository - interface.
 type Repository interface {
 	Create(ctx context.Context, user *User) error
+	CreateRoot(ctx context.Context, user *User) error
 	Signup(ctx context.Context, user *User) error
 	GetAll(ctx context.Context) ([]*User, error)
 	Get(ctx context.Context, user *User) (*User, error)
+	GetRoot(ctx context.Context) error
 	GetByEmail(ctx context.Context, user *User) (*User, error)
 	UpdateProfile(ctx context.Context, user *User) error
 	UpdateAllowances(ctx context.Context, user *User) error
@@ -102,6 +106,7 @@ func MarshalUser(user *proto.User) *User {
 		AllowDelete:     user.AllowDelete,
 		AllowBlock:      user.AllowBlock,
 		Blocked:         user.Blocked,
+		Admin:           user.Admin,
 		CreatedAt:       createdAt,
 		UpdatedAt:       updatedAt,
 		BirthDate:       bithDate,
@@ -140,6 +145,7 @@ func UnmarshalUser(user *User) *proto.User {
 		AllowDelete:     user.AllowDelete,
 		AllowBlock:      user.AllowBlock,
 		Blocked:         user.Blocked,
+		Admin:           user.Admin,
 		CreatedAt:       createdAt,
 		UpdatedAt:       updatedAt,
 		BirthDate:       birthDate,
@@ -239,6 +245,7 @@ func (u *User) prepare(action string) {
 		u.Phone = strings.TrimSpace(u.Phone)
 		u.CountryCode = strings.TrimSpace(u.CountryCode)
 		u.DialCode = strings.TrimSpace(u.DialCode)
+		u.Admin = false
 		u.CreatedAt = time.Now()
 		u.UpdatedAt = time.Now()
 		if u.Gender {
@@ -250,9 +257,23 @@ func (u *User) prepare(action string) {
 		u.Name = strings.TrimSpace(u.Name)
 		u.Email = strings.TrimSpace(u.Email)
 		u.Phone = strings.TrimSpace(u.Phone)
+		u.Admin = false
 		u.CountryCode = strings.TrimSpace(u.CountryCode)
 		u.DialCode = strings.TrimSpace(u.DialCode)
 		u.UpdatedAt = time.Now()
+	case "root":
+		u.Name = strings.TrimSpace(u.Name)
+		u.Email = strings.TrimSpace(u.Email)
+		u.Phone = strings.TrimSpace(u.Phone)
+		u.CountryCode = strings.TrimSpace(u.CountryCode)
+		u.DialCode = strings.TrimSpace(u.DialCode)
+		u.CreatedAt = time.Now()
+		u.UpdatedAt = time.Now()
+		if u.Gender {
+			u.Image = "hqs/users/shared/profileImage/femaleProfileImage.png"
+		} else {
+			u.Image = "hqs/users/shared/profileImage/maleProfileImage.png"
+		}
 	}
 }
 
@@ -264,6 +285,29 @@ func (r *MongoRepository) Create(ctx context.Context, user *User) error {
 	}
 
 	user.prepare("create")
+
+	// check that a user don't exist with that email
+	checkUser, _ := r.GetByEmail(ctx, user)
+	if checkUser != nil {
+		return errors.New("A user with that email already exists")
+	}
+
+	_, err := r.mongo.InsertOne(ctx, user)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+// CreateRoot - creates the root user.
+func (r *MongoRepository) CreateRoot(ctx context.Context, user *User) error {
+	user.ID = uuid.NewV4().String()
+	if err := user.Validate("create"); err != nil {
+		return err
+	}
+
+	user.prepare("root")
 
 	// check that a user don't exist with that email
 	checkUser, _ := r.GetByEmail(ctx, user)
@@ -447,6 +491,17 @@ func (r *MongoRepository) Get(ctx context.Context, user *User) (*User, error) {
 	return &userReturn, nil
 }
 
+// GetRoot - finds the single root user.
+func (r *MongoRepository) GetRoot(ctx context.Context) error {
+	userReturn := User{}
+
+	if err := r.mongo.FindOne(ctx, bson.M{"admin": true}).Decode(&userReturn); err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
 // GetByEmail fetches a single user by their email address.
 func (r *MongoRepository) GetByEmail(ctx context.Context, user *User) (*User, error) {
 	userReturn := User{}
@@ -471,6 +526,12 @@ func (r *MongoRepository) GetAll(ctx context.Context) ([]*User, error) {
 	for cursor.Next(ctx) {
 		var tempUser User
 		cursor.Decode(&tempUser)
+
+		// don't add root user
+		if tempUser.Admin {
+			continue
+		}
+
 		usersReturn = append(usersReturn, &tempUser)
 	}
 

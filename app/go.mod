@@ -9,7 +9,7 @@ require (
 	github.com/golang/protobuf v1.4.3
 	github.com/joho/godotenv v1.3.0
 	github.com/satori/go.uuid v1.2.0
-	github.com/softcorp-io/hqs_proto v0.0.2
+	github.com/softcorp-io/hqs_proto v0.0.3
 	go.mongodb.org/mongo-driver v1.4.4
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9

@@ -438,12 +438,6 @@ func (s *Handler) UpdateProfile(ctx context.Context, req *proto.User) (*proto.Re
 		return &proto.Response{}, errors.New("The user is blocked")
 	}
 
-	// the root user cannot be seen
-	if actualUser.Admin {
-		s.zapLog.Error("Tried to update root user")
-		return &proto.Response{}, errors.New("Root user is not updateable")
-	}
-
 	resultUser := repository.MarshalUser(req)
 
 	// give user the id from the token
@@ -548,12 +542,6 @@ func (s *Handler) UpdatePassword(ctx context.Context, req *proto.UpdatePasswordR
 	if actualUser.Blocked {
 		s.zapLog.Error("The user is blocked")
 		return &proto.Response{}, errors.New("The user is blocked")
-	}
-
-	// the root user cannot be updated
-	if actualUser.Admin {
-		s.zapLog.Error("Tried to update root user")
-		return &proto.Response{}, errors.New("Root user is not updateable")
 	}
 
 	// validate that the user remembers his/her old password
@@ -687,12 +675,6 @@ func (s *Handler) UploadImage(stream proto.UserService_UploadImageServer) error 
 	if actualUser.Blocked {
 		s.zapLog.Error("The user is blocked")
 		return errors.New("The user is blocked")
-	}
-
-	// the root user cannot be updated
-	if actualUser.Admin {
-		s.zapLog.Error("Tried to update root user")
-		return errors.New("Root user is not updateable")
 	}
 
 	maxSize := 1 << 40

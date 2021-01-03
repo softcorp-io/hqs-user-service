@@ -46,6 +46,7 @@ func NewHandler() (*handler.Handler, error) {
 	os.Setenv("CRYPTO_JWT_KEY", "someverysecurekey")
 	os.Setenv("AUTH_HISTORY_TTL", "20s")
 	os.Setenv("TOKEN_TTL", "20s")
+	os.Setenv("RESET_PASS_TTL", "20s")
 
 	zapLog, _ := zap.NewProduction()
 

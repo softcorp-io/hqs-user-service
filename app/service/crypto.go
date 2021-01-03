@@ -23,6 +23,7 @@ import (
 var key []byte
 var authHistoryTTL time.Duration
 var tokenTTL time.Duration
+var resetPassTokenTTL time.Duration
 
 // CustomClaims is our custom metadata, which will be hashed
 // and sent as the second segment in our JWT
@@ -90,6 +91,17 @@ func initCrypto() error {
 		return err
 	}
 	tokenTTL = tempTokenTTL
+
+	// get reset pass ttl duration
+	resetPassTTLKey, check := os.LookupEnv("RESET_PASS_TTL")
+	if !check {
+		return errors.New("Missing RESET_PASS_TTL")
+	}
+	tempResetPassTTLKey, err := time.ParseDuration(resetPassTTLKey)
+	if err != nil {
+		return err
+	}
+	resetPassTokenTTL = tempResetPassTTLKey
 
 	return nil
 }

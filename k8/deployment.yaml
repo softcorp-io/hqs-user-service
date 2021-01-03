@@ -35,6 +35,8 @@ spec:
                 value: "168h"
               - name: "TOKEN_TTL"
                 value: "24h"
+              - name: "RESET_PASS_TTL"
+                value: "48h"
               - name: "SERVICE_PORT"
                 value: "9000"
               - name: "SPACES_REGION"

@@ -80,13 +80,7 @@ jobs:
     - name: Deploy
       run: |-
         kubectl delete secret hqs-user-service-secret
-        kubectl create secret hqs-user-service-secret \
-          --from-literal=CRYPTO_JWT_KEY=${{ env.CRYPTO_JWT_KEY }} \
-          --from-literal=MONGO_HOST=${{ env.MONGO_HOST }} \
-          --from-literal=MONGO_USER=${{ env.MONGO_USER }} \
-          --from-literal=MONGO_PASSWORD=${{ env.MONGO_PASSWORD }} \
-          --from-literal=SPACES_KEY=${{ env.SPACES_KEY }} \
-          --from-literal=SPACES_SECRET=${{ env.SPACES_SECRET }}
+        kubectl create secret hqs-user-service-secret --from-literal=CRYPTO_JWT_KEY=${{ env.CRYPTO_JWT_KEY }} --from-literal=MONGO_HOST=${{ env.MONGO_HOST }} --from-literal=MONGO_USER=${{ env.MONGO_USER }} --from-literal=MONGO_PASSWORD=${{ env.MONGO_PASSWORD }} --from-literal=SPACES_KEY=${{ env.SPACES_KEY }} --from-literal=SPACES_SECRET=${{ env.SPACES_SECRET }}
         kubectl apply -f .
         kubectl set image $IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$RELEASE_VERSION -f $DEPLOYMENT_FILE
         kubectl rollout status deployment/$DEPLOYMENT_NAME

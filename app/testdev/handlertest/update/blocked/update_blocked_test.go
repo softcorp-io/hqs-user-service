@@ -7,9 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/softcorp-admin/hqs-service-user/handler"
+	handler "github.com/softcorp-io/hqs-user-service/handler"
 	mock "github.com/softcorp-io/hqs-user-service/testdev/mock"
-	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs-user-service"
 	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/metadata"

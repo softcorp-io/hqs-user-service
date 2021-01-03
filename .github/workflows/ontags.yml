@@ -77,15 +77,15 @@ jobs:
         docker push "gcr.io/$PROJECT_ID/$IMAGE:$RELEASE_VERSION"
 
     - name: Delete Secret
-       run: |-
-          kubectl delete secret hqs-user-service-secret
-       continue-on-error: true
-       working-directory: k8
+      run: |-
+        kubectl delete secret hqs-user-service-secret
+      continue-on-error: true
+      working-directory: k8
 
     - name: Create Secret
-       run: |-
+      run: |-
         kubectl create secret hqs-user-service-secret --from-literal=CRYPTO_JWT_KEY=${{ env.CRYPTO_JWT_KEY }} --from-literal=MONGO_HOST=${{ env.MONGO_HOST }} --from-literal=MONGO_USER=${{ env.MONGO_USER }} --from-literal=MONGO_PASSWORD=${{ env.MONGO_PASSWORD }} --from-literal=SPACES_KEY=${{ env.SPACES_KEY }} --from-literal=SPACES_SECRET=${{ env.SPACES_SECRET }}
-       working-directory: k8
+      working-directory: k8
 
     # Deploy the Docker image to the GKE cluster
     - name: Deploy

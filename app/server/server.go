@@ -12,13 +12,13 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	database "github.com/softcorp-io/hqs-user-service/database"
+	handler "github.com/softcorp-io/hqs-user-service/handler"
+	repository "github.com/softcorp-io/hqs-user-service/repository"
+	service "github.com/softcorp-io/hqs-user-service/service"
+	spaces "github.com/softcorp-io/hqs-user-service/spaces"
+	storage "github.com/softcorp-io/hqs-user-service/storage"
 	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
-	database "github.com/softcorp-io/hqs_user_service/database"
-	handler "github.com/softcorp-io/hqs_user_service/handler"
-	repository "github.com/softcorp-io/hqs_user_service/repository"
-	service "github.com/softcorp-io/hqs_user_service/service"
-	spaces "github.com/softcorp-io/hqs_user_service/spaces"
-	storage "github.com/softcorp-io/hqs_user_service/storage"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
@@ -155,7 +155,7 @@ func createRoot(zapLog *zap.Logger, repo *repository.MongoRepository) error {
 	rootUser := &repository.User{
 		Name:            "Root User",
 		Email:           rootEmail,
-		Phone:           "+4500000000",
+		Phone:           "00000000",
 		CountryCode:     "DK",
 		DialCode:        "+45",
 		Description:     "This is a special root user.",

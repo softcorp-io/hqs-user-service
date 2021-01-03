@@ -7,9 +7,9 @@ import (
 
 	"go.uber.org/zap"
 
-	handler "github.com/softcorp-io/hqs_user_service/handler"
-	repository "github.com/softcorp-io/hqs_user_service/repository"
-	service "github.com/softcorp-io/hqs_user_service/service"
+	handler "github.com/softcorp-io/hqs-user-service/handler"
+	repository "github.com/softcorp-io/hqs-user-service/repository"
+	service "github.com/softcorp-io/hqs-user-service/service"
 	"github.com/stretchr/testify/mock"
 )
 

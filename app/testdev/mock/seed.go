@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	repository "github.com/softcorp-io/hqs_user_service/repository"
+	repository "github.com/softcorp-io/hqs-user-service/repository"
 	"github.com/twinj/uuid"
 	"golang.org/x/crypto/bcrypt"
 )

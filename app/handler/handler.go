@@ -14,10 +14,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/metadata"
 
+	repository "github.com/softcorp-io/hqs-user-service/repository"
+	service "github.com/softcorp-io/hqs-user-service/service"
+	storage "github.com/softcorp-io/hqs-user-service/storage"
 	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
-	repository "github.com/softcorp-io/hqs_user_service/repository"
-	service "github.com/softcorp-io/hqs_user_service/service"
-	storage "github.com/softcorp-io/hqs_user_service/storage"
 )
 
 // authable - interface used to decode/encode tokens.

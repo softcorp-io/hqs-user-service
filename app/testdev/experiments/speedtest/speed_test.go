@@ -10,9 +10,9 @@ import (
 
 	"google.golang.org/grpc"
 
+	client "github.com/softcorp-io/hqs-user-service/testdev/client"
+	mock "github.com/softcorp-io/hqs-user-service/testdev/mock"
 	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
-	client "github.com/softcorp-io/hqs_user_service/testdev/client"
-	mock "github.com/softcorp-io/hqs_user_service/testdev/mock"
 )
 
 const amount = 500

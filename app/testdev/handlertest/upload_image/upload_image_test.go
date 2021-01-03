@@ -12,8 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 
+	mock "github.com/softcorp-io/hqs-user-service/testdev/mock"
 	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
-	mock "github.com/softcorp-io/hqs_user_service/testdev/mock"
 )
 
 var myClient proto.UserServiceClient

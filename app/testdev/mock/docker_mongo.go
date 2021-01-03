@@ -12,7 +12,7 @@ import (
 
 	"github.com/ory/dockertest"
 	"github.com/ory/dockertest/docker"
-	database "github.com/softcorp-io/hqs_user_service/database"
+	database "github.com/softcorp-io/hqs-user-service/database"
 )
 
 // stub database

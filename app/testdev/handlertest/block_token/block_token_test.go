@@ -9,9 +9,9 @@ import (
 
 	"google.golang.org/grpc/metadata"
 
+	handler "github.com/softcorp-io/hqs-user-service/handler"
+	mock "github.com/softcorp-io/hqs-user-service/testdev/mock"
 	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
-	handler "github.com/softcorp-io/hqs_user_service/handler"
-	mock "github.com/softcorp-io/hqs_user_service/testdev/mock"
 	"github.com/stretchr/testify/assert"
 )
 

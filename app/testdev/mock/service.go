@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
 
-	service "github.com/softcorp-io/hqs_user_service/service"
+	service "github.com/softcorp-io/hqs-user-service/service"
 )
 
 // GetService - returns a service, connected to a docker container.

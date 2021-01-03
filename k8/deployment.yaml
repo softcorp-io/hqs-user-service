@@ -37,6 +37,10 @@ spec:
                 value: "24h"
               - name: "SERVICE_PORT"
                 value: "9000"
+              - name: "SPACES_REGION"
+                value: "AMS3"
+              - name: "SPACES_ENDPOINT"
+                value: "ams3.digitaloceanspaces.com"
               envFrom:
               - secretRef:
                   name: hqs-user-service-secret

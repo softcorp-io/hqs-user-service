@@ -10,9 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc/metadata"
 
+	service "github.com/softcorp-io/hqs-user-service/service"
+	mock "github.com/softcorp-io/hqs-user-service/testdev/mock"
 	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
-	service "github.com/softcorp-io/hqs_user_service/service"
-	mock "github.com/softcorp-io/hqs_user_service/testdev/mock"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/mongo"
 )

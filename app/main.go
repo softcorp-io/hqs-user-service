@@ -3,7 +3,7 @@ package main
 import (
 	"sync"
 
-	server "github.com/softcorp-io/hqs_user_service/server"
+	server "github.com/softcorp-io/hqs-user-service/server"
 	"go.uber.org/zap"
 )
 

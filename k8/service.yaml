@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hqs-email-service
+  name: hqs-user-service
 spec:
   selector:
-    app: hqs-email-service
+    app: hqs-user-service
   type: LoadBalancer
   loadBalancerSourceRanges:
   - 130.226.157.37/32 # Home

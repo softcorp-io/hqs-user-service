@@ -43,6 +43,10 @@ spec:
                 value: "AMS3"
               - name: "SPACES_ENDPOINT"
                 value: "ams3.digitaloceanspaces.com"
+              - name: "EMAIL_SERVICE_IP"
+                value: "10.4.4.212"
+              - name: "EMAIL_SERVICE_PORT"
+                value: "9000"
               envFrom:
               - secretRef:
                   name: hqs-user-service-secret

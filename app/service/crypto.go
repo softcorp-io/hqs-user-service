@@ -13,28 +13,68 @@ import (
 	"google.golang.org/grpc/metadata"
 
 	uuid "github.com/satori/go.uuid"
-	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
+	userProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 )
 
-var key []byte
+// UserCryptoKey - key used for all authentication
+var UserCryptoKey []byte
+
+// GetUserCryptoKey - exports the UserCryptoKey
+func (srv *TokenService) GetUserCryptoKey() []byte {
+	return UserCryptoKey
+}
+
+// ResetPasswordCryptoKey - key used to create reset password token
+var ResetPasswordCryptoKey []byte
+
+// GetResetPasswordCryptoKey - exports the ResetPasswordCryptoKey
+func (srv *TokenService) GetResetPasswordCryptoKey() []byte {
+	return ResetPasswordCryptoKey
+}
+
 var authHistoryTTL time.Duration
-var tokenTTL time.Duration
-var resetPassTokenTTL time.Duration
+
+// GetAuthHistoryTTL - returns ttl of token
+func (srv *TokenService) GetAuthHistoryTTL() time.Duration {
+	return authHistoryTTL
+}
+
+var userTokenTTL time.Duration
+
+// GetUserTokenTTL - returns ttl of token
+func (srv *TokenService) GetUserTokenTTL() time.Duration {
+	return userTokenTTL
+}
+
+var signupTokenTTL time.Duration
+
+// GetSignupTokenTTL - returns ttl of token
+func (srv *TokenService) GetSignupTokenTTL() time.Duration {
+	return signupTokenTTL
+}
+
+var resetPasswordTokenTTL time.Duration
+
+// GetResetPasswordTokenTTL - returns ttl of token
+func (srv *TokenService) GetResetPasswordTokenTTL() time.Duration {
+	return resetPasswordTokenTTL
+}
 
 // CustomClaims is our custom metadata, which will be hashed
 // and sent as the second segment in our JWT
 type CustomClaims struct {
-	User *proto.User
+	User *userProto.User
 	ID   string
 	jwt.StandardClaims
 }
 
-// TokenIdentifier - used to block tokens
-type TokenIdentifier struct {
+// UserTokenIdentifier - used to store tokens s.t. we can validate them later
+// also used to perform actions on them, eg. block them
+type UserTokenIdentifier struct {
 	TokenID   string    `bson:"token_id" json:"token_id"`
 	UserID    string    `bson:"user_id" json:"user_id"`
 	Valid     bool      `bson:"valid" json:"valid"`
@@ -64,11 +104,18 @@ type TokenService struct {
 
 func initCrypto() error {
 	// Check if CRYPTO key exists
-	jwtKey, check := os.LookupEnv("CRYPTO_JWT_KEY")
+	jwtUserKey, check := os.LookupEnv("USER_CRYPTO_JWT_KEY")
 	if !check {
-		return errors.New("Missing CRYPTO_JWT_KEY")
+		return errors.New("Missing USER_CRYPTO_JWT_KEY")
 	}
-	key = []byte(jwtKey)
+	UserCryptoKey = []byte(jwtUserKey)
+
+	// Check if CRYPTO key exists
+	jwtResetPassowrdKey, check := os.LookupEnv("RESET_PASSWORD_CRYPTO_JWT_KEY")
+	if !check {
+		return errors.New("Missing RESET_PASSWORD_CRYPTO_JWT_KEY")
+	}
+	ResetPasswordCryptoKey = []byte(jwtResetPassowrdKey)
 
 	// get auth history duration
 	authTTLKey, check := os.LookupEnv("AUTH_HISTORY_TTL")
@@ -81,27 +128,38 @@ func initCrypto() error {
 	}
 	authHistoryTTL = tempAuthHistoryTTL
 
-	// get token ttl duration
-	tokenTTLKey, check := os.LookupEnv("TOKEN_TTL")
+	// get user token ttl duration
+	userTokenTTLKey, check := os.LookupEnv("USER_TOKEN_TTL")
 	if !check {
-		return errors.New("Missing AUTH_HISTORY_TTL")
+		return errors.New("Missing USER_TOKEN_TTL")
 	}
-	tempTokenTTL, err := time.ParseDuration(tokenTTLKey)
+	tempUserTokenTTL, err := time.ParseDuration(userTokenTTLKey)
 	if err != nil {
 		return err
 	}
-	tokenTTL = tempTokenTTL
+	userTokenTTL = tempUserTokenTTL
+
+	// get signup token ttl duration
+	signupTokenTTLKey, check := os.LookupEnv("SIGNUP_TOKEN_TTL")
+	if !check {
+		return errors.New("Missing SIGNUP_TOKEN_TTL")
+	}
+	tempSignupTokenTTL, err := time.ParseDuration(signupTokenTTLKey)
+	if err != nil {
+		return err
+	}
+	signupTokenTTL = tempSignupTokenTTL
 
 	// get reset pass ttl duration
-	resetPassTTLKey, check := os.LookupEnv("RESET_PASS_TTL")
+	resetPasswordTTLKey, check := os.LookupEnv("RESET_PASS_TTL")
 	if !check {
 		return errors.New("Missing RESET_PASS_TTL")
 	}
-	tempResetPassTTLKey, err := time.ParseDuration(resetPassTTLKey)
+	tempResetPasswordTTLKey, err := time.ParseDuration(resetPasswordTTLKey)
 	if err != nil {
 		return err
 	}
-	resetPassTokenTTL = tempResetPassTTLKey
+	resetPasswordTokenTTL = tempResetPasswordTTLKey
 
 	return nil
 }
@@ -113,6 +171,8 @@ func NewTokenService(authCollection *mongo.Collection, tokenCollection *mongo.Co
 	}
 
 	// create indexes for ttl for auth and token collection
+	// setting expires after seconds to 0 makes mongodb look at the date, so that it expires
+	// after it passed the date set in expires_at
 	authModel := mongo.IndexModel{
 		Keys:    bson.M{"expires_at": 1},
 		Options: options.Index().SetExpireAfterSeconds(0),
@@ -136,8 +196,8 @@ func NewTokenService(authCollection *mongo.Collection, tokenCollection *mongo.Co
 	return &TokenService{authCollection, tokenCollection, zapLog}, nil
 }
 
-// MarshalAuthIdentifier - converts proto.Auth to AuthIdentifier
-func MarshalAuthIdentifier(authIdentifier *proto.Auth) *AuthIdentifier {
+// MarshalAuthIdentifier - converts userProto.Auth to AuthIdentifier
+func MarshalAuthIdentifier(authIdentifier *userProto.Auth) *AuthIdentifier {
 	createdAt, _ := ptypes.Timestamp(authIdentifier.CreatedAt)
 	expiresAt, _ := ptypes.Timestamp(authIdentifier.ExpiresAt)
 	lastUsedAt, _ := ptypes.Timestamp(authIdentifier.LastUsedAt)
@@ -154,12 +214,12 @@ func MarshalAuthIdentifier(authIdentifier *proto.Auth) *AuthIdentifier {
 	}
 }
 
-// UnmarshalAuthIdentifier - converts AuthIdentifier to proto.Auth
-func UnmarshalAuthIdentifier(authIdentifier *AuthIdentifier) *proto.Auth {
+// UnmarshalAuthIdentifier - converts AuthIdentifier to userProto.Auth
+func UnmarshalAuthIdentifier(authIdentifier *AuthIdentifier) *userProto.Auth {
 	createdAt, _ := ptypes.TimestampProto(authIdentifier.CreatedAt)
 	expiresAt, _ := ptypes.TimestampProto(authIdentifier.ExpiresAt)
 	lastUsedAt, _ := ptypes.TimestampProto(authIdentifier.LastUsedAt)
-	return &proto.Auth{
+	return &userProto.Auth{
 		TokenID:    authIdentifier.TokenID,
 		UserID:     authIdentifier.UserID,
 		Valid:      authIdentifier.Valid,
@@ -223,7 +283,7 @@ func (srv *TokenService) BlockAllUserToken(ctx context.Context, userID string) e
 }
 
 // Decode - decodes a token string into a token object
-func (srv *TokenService) Decode(ctx context.Context, token string) (*CustomClaims, error) {
+func (srv *TokenService) Decode(ctx context.Context, token string, key []byte) (*CustomClaims, error) {
 	// Parse the token
 	tokenType, err := jwt.ParseWithClaims(token, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return key, nil
@@ -239,7 +299,7 @@ func (srv *TokenService) Decode(ctx context.Context, token string) (*CustomClaim
 		return nil, errors.New("token does not contain a valid id")
 	}
 	// check if token is blocked
-	tokenIdentifier := TokenIdentifier{}
+	tokenIdentifier := UserTokenIdentifier{}
 	if err := srv.tokenCollection.FindOne(ctx, bson.M{"token_id": tokenType.Claims.(*CustomClaims).ID}).Decode(&tokenIdentifier); err != nil {
 		return nil, err
 	}
@@ -253,6 +313,7 @@ func (srv *TokenService) Decode(ctx context.Context, token string) (*CustomClaim
 		srv.tokenCollection.DeleteOne(ctx, bson.M{"token_id": tokenIdentifier.TokenID})
 		return nil, errors.New("token is expired - please login again")
 	}
+
 	// update auth history
 	updateToken := bson.M{
 		"$set": bson.M{
@@ -269,23 +330,23 @@ func (srv *TokenService) Decode(ctx context.Context, token string) (*CustomClaim
 }
 
 // Encode - encodes a claim into a JWT
-func (srv *TokenService) Encode(ctx context.Context, user *proto.User) (string, error) {
+func (srv *TokenService) Encode(ctx context.Context, user *userProto.User, key []byte, expiresAt time.Duration) (string, error) {
 	// Create the Claims
 	id := uuid.NewV4().String()
 	claims := CustomClaims{
 		user,
 		id,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
+			ExpiresAt: time.Now().Add(expiresAt).Unix(),
 			Issuer:    "hqs.user.service",
 		},
 	}
 	// add token to redis
-	tokenIdentifier := TokenIdentifier{
+	tokenIdentifier := UserTokenIdentifier{
 		TokenID:   id,
 		UserID:    user.Id,
 		Valid:     true,
-		ExpiresAt: time.Now().Add(tokenTTL),
+		ExpiresAt: time.Now().Add(expiresAt),
 		CreatedAt: time.Now(),
 	}
 	_, err := srv.tokenCollection.InsertOne(ctx, &tokenIdentifier)
@@ -300,16 +361,16 @@ func (srv *TokenService) Encode(ctx context.Context, user *proto.User) (string, 
 }
 
 // GetAuthHistory - returns a users auth history
-func (srv *TokenService) GetAuthHistory(ctx context.Context, user *proto.User) ([]*proto.Auth, error) {
-	authHistory := []*proto.Auth{}
+func (srv *TokenService) GetAuthHistory(ctx context.Context, user *userProto.User) ([]*userProto.Auth, error) {
+	authHistory := []*userProto.Auth{}
 	if user.Id == "" {
-		return []*proto.Auth{}, errors.New("User id is not valid")
+		return []*userProto.Auth{}, errors.New("User id is not valid")
 	}
 
 	// Find all documents that includes the user_id
 	cursor, err := srv.authCollection.Find(ctx, bson.M{"user_id": user.Id})
 	if err != nil {
-		return []*proto.Auth{}, err
+		return []*userProto.Auth{}, err
 	}
 
 	for cursor.Next(context.Background()) {
@@ -328,9 +389,9 @@ func (srv *TokenService) GetAuthHistory(ctx context.Context, user *proto.User) (
 }
 
 // AddAuthToHistory - adds an authentication attempt to user history
-func (srv *TokenService) AddAuthToHistory(ctx context.Context, user *proto.User, token string, valid bool) error {
+func (srv *TokenService) AddAuthToHistory(ctx context.Context, user *userProto.User, token string, valid bool) error {
 	// decode the token
-	claims, err := srv.Decode(ctx, token)
+	claims, err := srv.Decode(ctx, token, UserCryptoKey)
 	if err != nil {
 		return err
 	}
@@ -393,7 +454,7 @@ func (srv *TokenService) AddAuthToHistory(ctx context.Context, user *proto.User,
 }
 
 // DeleteUserAuthHistory - deletes all the auth history of a user
-func (srv *TokenService) DeleteUserAuthHistory(ctx context.Context, user *proto.User) error {
+func (srv *TokenService) DeleteUserAuthHistory(ctx context.Context, user *userProto.User) error {
 	_, err := srv.authCollection.DeleteMany(ctx, bson.M{"user_id": user.Id})
 	if err != nil {
 		return err
@@ -402,7 +463,7 @@ func (srv *TokenService) DeleteUserAuthHistory(ctx context.Context, user *proto.
 }
 
 // DeleteUserTokenHistory - deletes all the auth history of a user
-func (srv *TokenService) DeleteUserTokenHistory(ctx context.Context, user *proto.User) error {
+func (srv *TokenService) DeleteUserTokenHistory(ctx context.Context, user *userProto.User) error {
 	_, err := srv.tokenCollection.DeleteMany(ctx, bson.M{"user_id": user.Id})
 	if err != nil {
 		return err

@@ -14,32 +14,33 @@ import (
 	"github.com/badoux/checkmail"
 	"github.com/golang/protobuf/ptypes"
 	uuid "github.com/satori/go.uuid"
-	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
+	userProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
 )
 
 // User - struct.
 type User struct {
-	ID              string    `bson:"id" json:"id"`
-	Name            string    `bson:"name" json:"name"`
-	Email           string    `bson:"email" json:"email"`
-	Phone           string    `bson:"phone" json:"phone"`
-	CountryCode     string    `bson:"country_code" json:"country_code"`
-	DialCode        string    `bson:"dial_code" json:"dial_code"`
-	Gender          bool      `bson:"gender" json:"gender"`
-	Image           string    `bson:"image" json:"image"`
-	Description     string    `bson:"description" json:"description"`
-	Title           string    `bson:"title" json:"title"`
-	BirthDate       time.Time `bson:"birth_date" json:"birth_date"`
-	Password        string    `bson:"password" json:"password"`
-	AllowView       bool      `bson:"allow_view" json:"allow_view"`
-	AllowCreate     bool      `bson:"allow_create" json:"allow_create"`
-	AllowPermission bool      `bson:"allow_permission" json:"allow_permission"`
-	AllowDelete     bool      `bson:"allow_delete" json:"allow_delete"`
-	AllowBlock      bool      `bson:"allow_block" json:"allow_block"`
-	Blocked         bool      `bson:"blocked" json:"blocked"`
-	Admin           bool      `bson:"admin" json:"admin"`
-	CreatedAt       time.Time `bson:"created_at" json:"created_at"`
-	UpdatedAt       time.Time `bson:"updated_at" json:"updated_at"`
+	ID                 string    `bson:"id" json:"id"`
+	Name               string    `bson:"name" json:"name"`
+	Email              string    `bson:"email" json:"email"`
+	Phone              string    `bson:"phone" json:"phone"`
+	CountryCode        string    `bson:"country_code" json:"country_code"`
+	DialCode           string    `bson:"dial_code" json:"dial_code"`
+	Gender             bool      `bson:"gender" json:"gender"`
+	Image              string    `bson:"image" json:"image"`
+	Description        string    `bson:"description" json:"description"`
+	Title              string    `bson:"title" json:"title"`
+	BirthDate          time.Time `bson:"birth_date" json:"birth_date"`
+	Password           string    `bson:"password" json:"password"`
+	AllowView          bool      `bson:"allow_view" json:"allow_view"`
+	AllowCreate        bool      `bson:"allow_create" json:"allow_create"`
+	AllowPermission    bool      `bson:"allow_permission" json:"allow_permission"`
+	AllowDelete        bool      `bson:"allow_delete" json:"allow_delete"`
+	AllowBlock         bool      `bson:"allow_block" json:"allow_block"`
+	AllowResetPassword bool      `bson:"allow_reset_password" json:"allow_reset_password"`
+	Blocked            bool      `bson:"blocked" json:"blocked"`
+	Admin              bool      `bson:"admin" json:"admin"`
+	CreatedAt          time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt          time.Time `bson:"updated_at" json:"updated_at"`
 }
 
 // Upload -struct.
@@ -74,8 +75,8 @@ func NewRepository(mongo *mongo.Collection) *MongoRepository {
 	return &MongoRepository{mongo}
 }
 
-// MarshalUserCollection - marshal collection from proto.users to users.
-func MarshalUserCollection(users []*proto.User) []*User {
+// MarshalUserCollection - marshal collection from userProto.users to users.
+func MarshalUserCollection(users []*userProto.User) []*User {
 	u := make([]*User, len(users))
 	for _, val := range users {
 		u = append(u, MarshalUser(val))
@@ -83,72 +84,74 @@ func MarshalUserCollection(users []*proto.User) []*User {
 	return u
 }
 
-// MarshalUser - marshals single user from proto.user to user.
-func MarshalUser(user *proto.User) *User {
+// MarshalUser - marshals single user from userProto.user to user.
+func MarshalUser(user *userProto.User) *User {
 	createdAt, _ := ptypes.Timestamp(user.CreatedAt)
 	updatedAt, _ := ptypes.Timestamp(user.UpdatedAt)
 	bithDate, _ := ptypes.Timestamp(user.BirthDate)
 	return &User{
-		ID:              user.Id,
-		Name:            user.Name,
-		Email:           user.Email,
-		Phone:           user.Phone,
-		CountryCode:     user.CountryCode,
-		DialCode:        user.DialCode,
-		Gender:          user.Gender,
-		Image:           user.Image,
-		Description:     user.Description,
-		Title:           user.Title,
-		Password:        user.Password,
-		AllowView:       user.AllowView,
-		AllowCreate:     user.AllowCreate,
-		AllowPermission: user.AllowPermission,
-		AllowDelete:     user.AllowDelete,
-		AllowBlock:      user.AllowBlock,
-		Blocked:         user.Blocked,
-		Admin:           user.Admin,
-		CreatedAt:       createdAt,
-		UpdatedAt:       updatedAt,
-		BirthDate:       bithDate,
+		ID:                 user.Id,
+		Name:               user.Name,
+		Email:              user.Email,
+		Phone:              user.Phone,
+		CountryCode:        user.CountryCode,
+		DialCode:           user.DialCode,
+		Gender:             user.Gender,
+		Image:              user.Image,
+		Description:        user.Description,
+		Title:              user.Title,
+		Password:           user.Password,
+		AllowView:          user.AllowView,
+		AllowCreate:        user.AllowCreate,
+		AllowPermission:    user.AllowPermission,
+		AllowDelete:        user.AllowDelete,
+		AllowBlock:         user.AllowBlock,
+		AllowResetPassword: user.AllowResetPassword,
+		Blocked:            user.Blocked,
+		Admin:              user.Admin,
+		CreatedAt:          createdAt,
+		UpdatedAt:          updatedAt,
+		BirthDate:          bithDate,
 	}
 }
 
-// UnmarshalUserCollection - unmarshal collection from users to proto.users.
-func UnmarshalUserCollection(users []*User) []*proto.User {
-	u := []*proto.User{}
+// UnmarshalUserCollection - unmarshal collection from users to userProto.users.
+func UnmarshalUserCollection(users []*User) []*userProto.User {
+	u := []*userProto.User{}
 	for _, val := range users {
 		u = append(u, UnmarshalUser(val))
 	}
 	return u
 }
 
-// UnmarshalUser - marshals single user from user to proto.user.
-func UnmarshalUser(user *User) *proto.User {
+// UnmarshalUser - marshals single user from user to userProto.user.
+func UnmarshalUser(user *User) *userProto.User {
 	createdAt, _ := ptypes.TimestampProto(user.CreatedAt)
 	updatedAt, _ := ptypes.TimestampProto(user.UpdatedAt)
 	birthDate, _ := ptypes.TimestampProto(user.BirthDate)
-	return &proto.User{
-		Id:              user.ID,
-		Name:            user.Name,
-		Email:           user.Email,
-		Phone:           user.Phone,
-		CountryCode:     user.CountryCode,
-		DialCode:        user.DialCode,
-		Gender:          user.Gender,
-		Image:           user.Image,
-		Description:     user.Description,
-		Title:           user.Title,
-		Password:        user.Password,
-		AllowView:       user.AllowView,
-		AllowCreate:     user.AllowCreate,
-		AllowPermission: user.AllowPermission,
-		AllowDelete:     user.AllowDelete,
-		AllowBlock:      user.AllowBlock,
-		Blocked:         user.Blocked,
-		Admin:           user.Admin,
-		CreatedAt:       createdAt,
-		UpdatedAt:       updatedAt,
-		BirthDate:       birthDate,
+	return &userProto.User{
+		Id:                 user.ID,
+		Name:               user.Name,
+		Email:              user.Email,
+		Phone:              user.Phone,
+		CountryCode:        user.CountryCode,
+		DialCode:           user.DialCode,
+		Gender:             user.Gender,
+		Image:              user.Image,
+		Description:        user.Description,
+		Title:              user.Title,
+		Password:           user.Password,
+		AllowView:          user.AllowView,
+		AllowCreate:        user.AllowCreate,
+		AllowPermission:    user.AllowPermission,
+		AllowDelete:        user.AllowDelete,
+		AllowBlock:         user.AllowBlock,
+		AllowResetPassword: user.AllowResetPassword,
+		Blocked:            user.Blocked,
+		Admin:              user.Admin,
+		CreatedAt:          createdAt,
+		UpdatedAt:          updatedAt,
+		BirthDate:          birthDate,
 	}
 }
 
@@ -386,12 +389,13 @@ func (r *MongoRepository) UpdateAllowances(ctx context.Context, user *User) erro
 
 	updateUser := bson.M{
 		"$set": bson.M{
-			"allow_view":       user.AllowView,
-			"allow_create":     user.AllowCreate,
-			"allow_permission": user.AllowPermission,
-			"allow_delete":     user.AllowDelete,
-			"allow_block":      user.AllowBlock,
-			"updated_at":       user.UpdatedAt,
+			"allow_view":           user.AllowView,
+			"allow_create":         user.AllowCreate,
+			"allow_permission":     user.AllowPermission,
+			"allow_delete":         user.AllowDelete,
+			"allow_block":          user.AllowBlock,
+			"allow_reset_password": user.AllowResetPassword,
+			"updated_at":           user.UpdatedAt,
 		},
 	}
 

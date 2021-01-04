@@ -13,11 +13,12 @@ require (
 	github.com/docker/go-units v0.4.0 // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/joho/godotenv v1.3.0
+	github.com/micro/go-micro v1.18.0 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v0.1.1 // indirect
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/satori/go.uuid v1.2.0
-	github.com/softcorp-io/hqs_proto v0.0.3
+	github.com/softcorp-io/hqs_proto v0.0.13
 	github.com/stretchr/testify v1.6.1
 	github.com/twinj/uuid v1.0.0
 	go.mongodb.org/mongo-driver v1.4.4

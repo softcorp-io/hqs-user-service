@@ -18,7 +18,8 @@ import (
 	service "github.com/softcorp-io/hqs-user-service/service"
 	spaces "github.com/softcorp-io/hqs-user-service/spaces"
 	storage "github.com/softcorp-io/hqs-user-service/storage"
-	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
+	emailProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_email_service"
+	userProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
@@ -108,8 +109,28 @@ func Run(zapLog *zap.Logger, wg *sync.WaitGroup) {
 	// setup storage
 	stor := storage.NewSpaceStorage(spc)
 
+	// setup email client
+	emailServiceIP, ok := os.LookupEnv("EMAIL_SERVICE_IP")
+	if !ok {
+		zapLog.Fatal("Could not get email service ip")
+	}
+	emailServicePort, ok := os.LookupEnv("EMAIL_SERVICE_PORT")
+	if !ok {
+		zapLog.Fatal("Could not get email service port")
+	}
+	conn, err := grpc.DialContext(context.Background(), emailServiceIP+":"+emailServicePort, grpc.WithInsecure())
+	if err != nil {
+		zapLog.Fatal(fmt.Sprintf("Could not dial email service with err %v", err))
+	}
+	defer conn.Close()
+	emailClient := emailProto.NewEmailServiceClient(conn)
+	_, err = emailClient.Ping(context.Background(), &emailProto.Request{})
+	if err != nil {
+		zapLog.Fatal(fmt.Sprintf("Could not ping email service with err %v", err))
+	}
+
 	// use above to create handler
-	handle := handler.NewHandler(repo, stor, tokenService, zapLog)
+	handle := handler.NewHandler(repo, stor, tokenService, emailClient, zapLog)
 
 	// create the service and run the service
 	port, ok := os.LookupEnv("SERVICE_PORT")
@@ -126,11 +147,10 @@ func Run(zapLog *zap.Logger, wg *sync.WaitGroup) {
 	zapLog.Info(fmt.Sprintf("Service running on port: %s", port))
 
 	// setup grpc
-
 	grpcServer := grpc.NewServer()
 
 	// register handler
-	proto.RegisterUserServiceServer(grpcServer, handle)
+	userProto.RegisterUserServiceServer(grpcServer, handle)
 
 	// run the server
 	if err := grpcServer.Serve(lis); err != nil {
@@ -153,20 +173,21 @@ func createRoot(zapLog *zap.Logger, repo *repository.MongoRepository) error {
 	}
 	rootEmail := "root@softcorp.io"
 	rootUser := &repository.User{
-		Name:            "Root User",
-		Email:           rootEmail,
-		Phone:           "00000000",
-		CountryCode:     "DK",
-		DialCode:        "+45",
-		Description:     "This is a special root user.",
-		Gender:          false,
-		Password:        string(hashedPass),
-		AllowView:       true,
-		AllowCreate:     true,
-		AllowPermission: true,
-		AllowDelete:     true,
-		AllowBlock:      true,
-		Admin:           true,
+		Name:               "Root User",
+		Email:              rootEmail,
+		Phone:              "00000000",
+		CountryCode:        "DK",
+		DialCode:           "+45",
+		Description:        "This is a special root user.",
+		Gender:             false,
+		Password:           string(hashedPass),
+		AllowView:          true,
+		AllowCreate:        true,
+		AllowPermission:    true,
+		AllowDelete:        true,
+		AllowBlock:         true,
+		AllowResetPassword: true,
+		Admin:              true,
 	}
 	if err := repo.CreateRoot(ctx, rootUser); err != nil {
 		zapLog.Fatal(fmt.Sprintf("Could not create root user with err %v", err))

@@ -12,7 +12,8 @@ env:
   DEPLOYMENT_NAME: hqs-user-service
   DEPLOYMENT_FILE: deployment.yaml
   IMAGE: hqs-user-service
-  CRYPTO_JWT_KEY: ${{ secrets.CRYPTO_JWT_KEY }}
+  USER_CRYPTO_JWT_KEY: ${{ secrets.USER_CRYPTO_JWT_KEY }}
+  RESET_PASSWORD_CRYPTO_JWT_KEY: ${{ secrets.RESET_PASSWORD_CRYPTO_JWT_KEY }}
   MONGO_HOST: ${{ secrets.MONGO_HOST }}
   MONGO_USER: ${{ secrets.MONGO_USER }}
   MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
@@ -86,13 +87,7 @@ jobs:
     # Create secret
     - name: Create Secret
       run: |-
-        kubectl create secret hqs-user-service-secret 
-          --from-literal=CRYPTO_JWT_KEY="${{ env.CRYPTO_JWT_KEY }}" \
-          --from-literal=MONGO_HOST="${{ env.MONGO_HOST }}" \
-          --from-literal=MONGO_USER="${{ env.MONGO_USER }}" \
-          --from-literal=MONGO_PASSWORD="${{ env.MONGO_PASSWORD }}" \
-          --from-literal=SPACES_KEY="${{ env.SPACES_KEY }}" \
-          --from-literal=SPACES_SECRET="${{ env.SPACES_SECRET }}"
+        kubectl create secret generic hqs-user-service-secret --from-literal=USER_CRYPTO_JWT_KEY="${{ env.USER_CRYPTO_JWT_KEY }}" --from-literal=MONGO_HOST="${{ env.MONGO_HOST }}" --from-literal=MONGO_USER="${{ env.MONGO_USER }}" --from-literal=MONGO_PASSWORD="${{ env.MONGO_PASSWORD }}" --from-literal=SPACES_KEY="${{ env.SPACES_KEY }}" --from-literal=SPACES_SECRET="${{ env.SPACES_SECRET }}" --from-literal=RESET_PASSWORD_CRYPTO_JWT_KEY="${{ env.RESET_PASSWORD_CRYPTO_JWT_KEY }}"
       working-directory: k8
 
     # Deploy the Docker image to the GKE cluster

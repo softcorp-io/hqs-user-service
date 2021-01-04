@@ -2,6 +2,7 @@ package mock
 
 import (
 	"bytes"
+	"context"
 	"os"
 	"time"
 
@@ -10,8 +11,18 @@ import (
 	handler "github.com/softcorp-io/hqs-user-service/handler"
 	repository "github.com/softcorp-io/hqs-user-service/repository"
 	service "github.com/softcorp-io/hqs-user-service/service"
+	emailProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_email_service"
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/grpc"
 )
+
+type emailClientMock struct {
+	mock.Mock
+}
+
+func (ec *emailClientMock) SendResetPasswordEmail(ctx context.Context, email *emailProto.ResetPasswordEmail, options ...grpc.CallOption) (*emailProto.Response, error) {
+	return nil, nil
+}
 
 type storageMock struct {
 	mock.Mock
@@ -43,9 +54,14 @@ func NewHandler() (*handler.Handler, error) {
 	storageMock.On("Get", mock.Anything).Return("some image", nil)
 	storageMock.On("Delete", mock.Anything).Return(nil)
 
-	os.Setenv("CRYPTO_JWT_KEY", "someverysecurekey")
+	emailClientMock := new(emailClientMock)
+	emailClientMock.On("SendResetPasswordEmail", mock.Anything).Return(nil, nil)
+
+	os.Setenv("USER_CRYPTO_JWT_KEY", "someverysecurekey")
+	os.Setenv("RESET_PASSWORD_CRYPTO_JWT_KEY", "someverysecurekey")
 	os.Setenv("AUTH_HISTORY_TTL", "20s")
-	os.Setenv("TOKEN_TTL", "20s")
+	os.Setenv("USER_TOKEN_TTL", "20s")
+	os.Setenv("SIGNUP_TOKEN_TTL", "20s")
 	os.Setenv("RESET_PASS_TTL", "20s")
 
 	zapLog, _ := zap.NewProduction()
@@ -56,7 +72,7 @@ func NewHandler() (*handler.Handler, error) {
 		return nil, err
 	}
 
-	resultHandler := handler.NewHandler(repo, storageMock, tokenService, zapLog)
+	resultHandler := handler.NewHandler(repo, storageMock, tokenService, emailClientMock, zapLog)
 
 	return resultHandler, nil
 }

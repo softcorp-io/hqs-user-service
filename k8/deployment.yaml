@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
     name: hqs-user-service
 spec:
-    replicas: 2
+    replicas: 1
     selector:
       matchLabels:
         app: hqs-user-service
@@ -15,7 +15,7 @@ spec:
         spec:
           containers:
             - name: hqs-user-service
-              image: gcr.io/softcorp-hqs/hqs/hqs_user_service:v0.0.16
+              image: gcr.io/softcorp-hqs/hqs/hqs-user-service:v0.0.25
               imagePullPolicy: Always
               volumeMounts: 
               - name: image-storage

@@ -49,9 +49,9 @@ func TestEncoderDecoder(t *testing.T) {
 		Name:     name,
 		Email:    email,
 		Password: password,
-	})
+	}, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 
-	claims, errDecode := myService.Decode(context.Background(), token)
+	claims, errDecode := myService.Decode(context.Background(), token, myService.GetUserCryptoKey())
 
 	// assert
 	// encoder
@@ -76,9 +76,9 @@ func TestEncoderDecoderTokenExpiration(t *testing.T) {
 		Name:     name,
 		Email:    email,
 		Password: password,
-	})
+	}, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	time.Sleep(time.Second * 6)
-	claims, errDecode := myService.Decode(context.Background(), token)
+	claims, errDecode := myService.Decode(context.Background(), token, myService.GetUserCryptoKey())
 
 	// assert
 	// encoder
@@ -100,9 +100,9 @@ func TestBlockToken(t *testing.T) {
 		Name:     name,
 		Email:    email,
 		Password: password,
-	})
+	}, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 
-	claims, errDecode := myService.Decode(context.Background(), token)
+	claims, errDecode := myService.Decode(context.Background(), token, myService.GetUserCryptoKey())
 	assert.Equal(t, nil, errEncode)
 	assert.NotEmpty(t, token)
 	assert.Equal(t, nil, errDecode)
@@ -116,7 +116,7 @@ func TestBlockToken(t *testing.T) {
 
 	// assert
 	assert.Equal(t, nil, err)
-	claims, err = myService.Decode(context.Background(), token)
+	claims, err = myService.Decode(context.Background(), token, myService.GetUserCryptoKey())
 	assert.Error(t, err)
 	assert.Empty(t, claims)
 }
@@ -136,10 +136,10 @@ func TestBlockAllTokens(t *testing.T) {
 	}
 
 	// arrange
-	tokenOne, err := myService.Encode(context.Background(), &user)
+	tokenOne, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	tokenTwo, err := myService.Encode(context.Background(), &user)
+	tokenTwo, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	// act 1
@@ -150,7 +150,7 @@ func TestBlockAllTokens(t *testing.T) {
 	// assert 1
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 1, len(tokenHistory))
-	claimsOne, err := myService.Decode(context.Background(), tokenOne)
+	claimsOne, err := myService.Decode(context.Background(), tokenOne, myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 
@@ -162,7 +162,7 @@ func TestBlockAllTokens(t *testing.T) {
 	// assert 2
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 2, len(tokenHistory))
-	claimsTwo, err := myService.Decode(context.Background(), tokenTwo)
+	claimsTwo, err := myService.Decode(context.Background(), tokenTwo, myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 	assert.Equal(t, tokenHistory[1].TokenID, claimsTwo.ID)
@@ -170,8 +170,8 @@ func TestBlockAllTokens(t *testing.T) {
 	// act 3
 	err = myService.BlockAllUserToken(context.Background(), user.Id)
 	tokenHistory, err = myService.GetAuthHistory(context.Background(), &user)
-	claimsOne, tokenOneErr := myService.Decode(context.Background(), tokenOne)
-	claimsTwo, tokenTwoErr := myService.Decode(context.Background(), tokenOne)
+	claimsOne, tokenOneErr := myService.Decode(context.Background(), tokenOne, myService.GetUserCryptoKey())
+	claimsTwo, tokenTwoErr := myService.Decode(context.Background(), tokenOne, myService.GetUserCryptoKey())
 
 	// assert 3
 	assert.Equal(t, 2, len(tokenHistory))
@@ -200,10 +200,10 @@ func TestGetAuthHistory(t *testing.T) {
 	}
 
 	// arrange
-	tokenOne, err := myService.Encode(context.Background(), &user)
+	tokenOne, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	tokenTwo, err := myService.Encode(context.Background(), &user)
+	tokenTwo, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	// act 1
@@ -214,7 +214,7 @@ func TestGetAuthHistory(t *testing.T) {
 	// assert 1
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 1, len(tokenHistory))
-	claimsOne, err := myService.Decode(context.Background(), tokenOne)
+	claimsOne, err := myService.Decode(context.Background(), tokenOne, myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 
@@ -226,7 +226,7 @@ func TestGetAuthHistory(t *testing.T) {
 	// assert 2
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 2, len(tokenHistory))
-	claimsTwo, err := myService.Decode(context.Background(), tokenTwo)
+	claimsTwo, err := myService.Decode(context.Background(), tokenTwo, myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 	assert.Equal(t, tokenHistory[1].TokenID, claimsTwo.ID)
@@ -251,10 +251,10 @@ func TestGetAuthHistoryExpiration(t *testing.T) {
 	}
 
 	// arrange
-	tokenOne, err := myService.Encode(context.Background(), &user)
+	tokenOne, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	tokenTwo, err := myService.Encode(context.Background(), &user)
+	tokenTwo, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	// act 1
@@ -265,7 +265,7 @@ func TestGetAuthHistoryExpiration(t *testing.T) {
 	// assert 1
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 1, len(tokenHistory))
-	claimsOne, err := myService.Decode(context.Background(), tokenOne)
+	claimsOne, err := myService.Decode(context.Background(), tokenOne, myService.GetUserCryptoKey())
 	assert.Nil(t, err)
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 
@@ -277,7 +277,7 @@ func TestGetAuthHistoryExpiration(t *testing.T) {
 	// assert 2
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 2, len(tokenHistory))
-	claimsTwo, err := myService.Decode(context.Background(), tokenTwo)
+	claimsTwo, err := myService.Decode(context.Background(), tokenTwo, myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 	assert.Equal(t, tokenHistory[1].TokenID, claimsTwo.ID)
@@ -289,10 +289,10 @@ func TestGetAuthHistoryExpiration(t *testing.T) {
 	// assert 3
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(tokenHistory))
-	claimsThree, err := myService.Decode(context.Background(), tokenTwo)
+	claimsThree, err := myService.Decode(context.Background(), tokenTwo, myService.GetUserCryptoKey())
 	assert.Error(t, err)
 	assert.Empty(t, claimsThree)
-	claimsThree, err = myService.Decode(context.Background(), tokenOne)
+	claimsThree, err = myService.Decode(context.Background(), tokenOne, myService.GetUserCryptoKey())
 	assert.Error(t, err)
 	assert.Empty(t, claimsThree)
 
@@ -316,10 +316,10 @@ func TestAuthIndex(t *testing.T) {
 	}
 
 	// arrange
-	tokenOne, err := myService.Encode(context.Background(), &user)
+	tokenOne, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	tokenTwo, err := myService.Encode(context.Background(), &user)
+	tokenTwo, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	// act
@@ -353,10 +353,10 @@ func TestTokenIndex(t *testing.T) {
 	}
 
 	// configure
-	_, err := myService.Encode(context.Background(), &user)
+	_, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	_, err = myService.Encode(context.Background(), &user)
+	_, err = myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	cursor, err := mongoTokenCollection.Find(context.TODO(), bson.M{})
@@ -385,10 +385,10 @@ func TestSetLatitudeLongitude(t *testing.T) {
 	}
 
 	// arrange
-	tokenOne, err := myService.Encode(context.Background(), &user)
+	tokenOne, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	tokenTwo, err := myService.Encode(context.Background(), &user)
+	tokenTwo, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	// act 1
@@ -405,7 +405,7 @@ func TestSetLatitudeLongitude(t *testing.T) {
 	// assert 1
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 1, len(tokenHistory))
-	claimsOne, err := myService.Decode(context.Background(), tokenOne)
+	claimsOne, err := myService.Decode(context.Background(), tokenOne, myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 	assert.Equal(t, tokenHistory[0].Latitude, 1.234)
@@ -419,7 +419,7 @@ func TestSetLatitudeLongitude(t *testing.T) {
 	// assert 2
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 2, len(tokenHistory))
-	claimsTwo, err := myService.Decode(context.Background(), tokenTwo)
+	claimsTwo, err := myService.Decode(context.Background(), tokenTwo, myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 	assert.Equal(t, tokenHistory[1].TokenID, claimsTwo.ID)

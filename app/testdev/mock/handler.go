@@ -24,6 +24,10 @@ func (ec *emailClientMock) SendResetPasswordEmail(ctx context.Context, email *em
 	return nil, nil
 }
 
+func (ec *emailClientMock) Ping(ctx context.Context, email *emailProto.Request, options ...grpc.CallOption) (*emailProto.Response, error) {
+	return nil, nil
+}
+
 type storageMock struct {
 	mock.Mock
 }
@@ -56,6 +60,7 @@ func NewHandler() (*handler.Handler, error) {
 
 	emailClientMock := new(emailClientMock)
 	emailClientMock.On("SendResetPasswordEmail", mock.Anything).Return(nil, nil)
+	emailClientMock.On("Ping", mock.Anything).Return(nil, nil)
 
 	os.Setenv("USER_CRYPTO_JWT_KEY", "someverysecurekey")
 	os.Setenv("RESET_PASSWORD_CRYPTO_JWT_KEY", "someverysecurekey")

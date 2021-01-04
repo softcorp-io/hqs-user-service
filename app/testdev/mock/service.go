@@ -19,10 +19,10 @@ func GetService() (*service.TokenService, *mongo.Collection, *mongo.Collection, 
 
 	os.Setenv("USER_CRYPTO_JWT_KEY", "someverysecurekey")
 	os.Setenv("RESET_PASSWORD_CRYPTO_JWT_KEY", "someverysecurekey")
-	os.Setenv("AUTH_HISTORY_TTL", "20s")
-	os.Setenv("USER_TOKEN_TTL", "20s")
-	os.Setenv("SIGNUP_TOKEN_TTL", "20s")
-	os.Setenv("RESET_PASS_TTL", "20s")
+	os.Setenv("AUTH_HISTORY_TTL", "5s")
+	os.Setenv("USER_TOKEN_TTL", "5s")
+	os.Setenv("SIGNUP_TOKEN_TTL", "5s")
+	os.Setenv("RESET_PASS_TTL", "5s")
 
 	zapLog, _ := zap.NewProduction()
 

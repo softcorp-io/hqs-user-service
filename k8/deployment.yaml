@@ -15,7 +15,7 @@ spec:
         spec:
           containers:
             - name: hqs-user-service
-              image: gcr.io/softcorp-hqs/hqs-user-service:v0.0.30
+              image: gcr.io/softcorp-hqs/hqs-user-service:v0.0.31
               imagePullPolicy: Always
               volumeMounts: 
               - name: image-storage
@@ -33,10 +33,12 @@ spec:
                 value: "token_history"
               - name: "AUTH_HISTORY_TTL"
                 value: "168h"
-              - name: "TOKEN_TTL"
+              - name: "USER_TOKEN_TTL"
                 value: "24h"
               - name: "RESET_PASS_TTL"
                 value: "48h"
+              - name: "SIGNUP_TOKEN_TTL"
+                value: "24h"
               - name: "SERVICE_PORT"
                 value: "9000"
               - name: "SPACES_REGION"

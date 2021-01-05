@@ -54,6 +54,11 @@ func NewHandler(repo repository.Repository, stor storage.Storage, tokenService a
 	return &Handler{repo, stor, tokenService, emailClient, zapLog}
 }
 
+// Ping - used for other service to check if live
+func (s *Handler) Ping(ctx context.Context, req *userProto.Request) (*userProto.Response, error) {
+	return &userProto.Response{}, nil
+}
+
 // Create - creates a new user. Parent user has to be logged in in order to create.
 // Furthermore the authUser has to be allowed to create.
 func (s *Handler) Create(ctx context.Context, req *userProto.User) (*userProto.Response, error) {

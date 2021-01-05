@@ -49,6 +49,8 @@ spec:
                 value: "10.4.4.212"
               - name: "EMAIL_SERVICE_PORT"
                 value: "9000"
+              - name: "EMAIL_SIGNUP_LINK_BASE"
+                value: "https://hqs.softcorp.io/signup/"
               envFrom:
               - secretRef:
                   name: hqs-user-service-secret

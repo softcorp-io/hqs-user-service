@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"strings"
 	"time"
 
@@ -152,8 +153,15 @@ func (s *Handler) GenerateSignupToken(ctx context.Context, req *userProto.User) 
 		return &userProto.Token{}, err
 	}
 
-	// return result
+	linkBase, ok := os.LookupEnv("EMAIL_SIGNUP_LINK_BASE")
+	if !ok {
+		s.zapLog.Error("Could not find signup link EMAIL_SIGNUP_LINK_BASE")
+		return &userProto.Token{}, err
+	}
+
+	// return result and add url to link
 	res := &userProto.Token{}
+	res.Url = linkBase
 	res.Token = token
 
 	return res, nil

@@ -68,6 +68,7 @@ func NewHandler() (*handler.Handler, error) {
 	os.Setenv("USER_TOKEN_TTL", "20s")
 	os.Setenv("SIGNUP_TOKEN_TTL", "20s")
 	os.Setenv("RESET_PASS_TTL", "20s")
+	os.Setenv("EMAIL_SIGNUP_LINK_BASE", "https://hqs.softcorp.io/signup/")
 
 	zapLog, _ := zap.NewProduction()
 

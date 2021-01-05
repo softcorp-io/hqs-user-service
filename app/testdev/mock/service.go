@@ -23,6 +23,7 @@ func GetService() (*service.TokenService, *mongo.Collection, *mongo.Collection, 
 	os.Setenv("USER_TOKEN_TTL", "5s")
 	os.Setenv("SIGNUP_TOKEN_TTL", "5s")
 	os.Setenv("RESET_PASS_TTL", "5s")
+	os.Setenv("EMAIL_SIGNUP_LINK_BASE", "https://hqs.softcorp.io/signup/")
 
 	zapLog, _ := zap.NewProduction()
 

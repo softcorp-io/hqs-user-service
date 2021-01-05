@@ -153,6 +153,7 @@ func (s *Handler) GenerateSignupToken(ctx context.Context, req *userProto.User) 
 		return &userProto.Token{}, err
 	}
 
+	// find reset password link
 	linkBase, ok := os.LookupEnv("EMAIL_SIGNUP_LINK_BASE")
 	if !ok {
 		s.zapLog.Error("Could not find signup link EMAIL_SIGNUP_LINK_BASE")

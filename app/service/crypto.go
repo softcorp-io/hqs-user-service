@@ -89,7 +89,8 @@ type AuthIdentifier struct {
 	Valid      bool      `bson:"valid" json:"valid"`
 	Longitude  float64   `bson:"longitude" json:"longitude"`
 	Latitude   float64   `bson:"latitude" json:"latitude"`
-	Device     string    `bson:"devise" json:"devise"`
+	Device     string    `bson:"device" json:"device"`
+	TypeOf     string    `bson:"type_of" json:"type_of"`
 	LastUsedAt time.Time `bson:"last_used_at" json:"last_used_at"`
 	ExpiresAt  time.Time `bson:"expires_at" json:"expires_at"`
 	CreatedAt  time.Time `bson:"created_at" json:"created_at"`
@@ -207,6 +208,7 @@ func MarshalAuthIdentifier(authIdentifier *userProto.Auth) *AuthIdentifier {
 		Valid:      authIdentifier.Valid,
 		Longitude:  authIdentifier.Longitude,
 		Latitude:   authIdentifier.Latitude,
+		TypeOf:     authIdentifier.TypeOf,
 		Device:     authIdentifier.Device,
 		ExpiresAt:  expiresAt,
 		CreatedAt:  createdAt,
@@ -225,6 +227,7 @@ func UnmarshalAuthIdentifier(authIdentifier *AuthIdentifier) *userProto.Auth {
 		Valid:      authIdentifier.Valid,
 		Longitude:  authIdentifier.Longitude,
 		Latitude:   authIdentifier.Latitude,
+		TypeOf:     authIdentifier.TypeOf,
 		Device:     authIdentifier.Device,
 		ExpiresAt:  expiresAt,
 		CreatedAt:  createdAt,
@@ -389,7 +392,7 @@ func (srv *TokenService) GetAuthHistory(ctx context.Context, user *userProto.Use
 }
 
 // AddAuthToHistory - adds an authentication attempt to user history
-func (srv *TokenService) AddAuthToHistory(ctx context.Context, user *userProto.User, token string, valid bool) error {
+func (srv *TokenService) AddAuthToHistory(ctx context.Context, user *userProto.User, token string, valid bool, typeOf string) error {
 	// decode the token
 	claims, err := srv.Decode(ctx, token, UserCryptoKey)
 	if err != nil {
@@ -438,6 +441,7 @@ func (srv *TokenService) AddAuthToHistory(ctx context.Context, user *userProto.U
 		TokenID:    claims.ID,
 		Device:     deviceInformation,
 		Valid:      valid,
+		TypeOf:     typeOf,
 		CreatedAt:  time.Now(),
 		ExpiresAt:  time.Now().Add(authHistoryTTL),
 		LastUsedAt: time.Now(),

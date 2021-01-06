@@ -59,6 +59,10 @@ func SetupDockerPostgres() error {
 	// set global pool
 	mongoPool = pool
 
+	if err := TearDownMongoDocker(); err != nil {
+		zapLog.Fatal("Could not tear down docker")
+	}
+
 	opts := dockertest.RunOptions{
 		Repository:   "mongo",
 		Tag:          "latest",
@@ -103,8 +107,10 @@ func SetupDockerPostgres() error {
 // TearDownMongoDocker - destorys the docker container.
 func TearDownMongoDocker() error {
 	mongoPool.RemoveContainerByName(mongoContainer)
-	if err := mongoPool.Purge(mongoResource); err != nil {
-		return err
+	if mongoResource != nil {
+		if err := mongoPool.Purge(mongoResource); err != nil {
+			return err
+		}
 	}
 	return nil
 }

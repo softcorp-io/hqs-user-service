@@ -18,7 +18,7 @@ require (
 	github.com/opencontainers/runc v0.1.1 // indirect
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/satori/go.uuid v1.2.0
-	github.com/softcorp-io/hqs_proto v0.0.16
+	github.com/softcorp-io/hqs_proto v0.0.18
 	github.com/stretchr/testify v1.6.1
 	github.com/twinj/uuid v1.0.0
 	go.mongodb.org/mongo-driver v1.4.4

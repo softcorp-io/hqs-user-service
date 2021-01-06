@@ -15,7 +15,7 @@ spec:
         spec:
           containers:
             - name: hqs-user-service
-              image: gcr.io/softcorp-hqs/hqs-user-service:v0.0.39
+              image: gcr.io/softcorp-hqs/hqs-user-service:v0.0.40
               imagePullPolicy: Always
               volumeMounts: 
               - name: image-storage
@@ -50,7 +50,7 @@ spec:
               - name: "EMAIL_SERVICE_PORT"
                 value: "9000"
               - name: "EMAIL_SIGNUP_LINK_BASE"
-                value: "https://hqs.softcorp.io/signup/"
+                value: "https://hqs.softcorp.io/#/signup/"
               envFrom:
               - secretRef:
                   name: hqs-user-service-secret

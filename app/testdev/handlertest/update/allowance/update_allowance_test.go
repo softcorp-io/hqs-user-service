@@ -44,6 +44,7 @@ func TestUpdateAllowanceAllowed(t *testing.T) {
 	seedOneAllowPermission := true
 	seedOneAllowDelete := true
 	seedOneAllowBlock := true
+	seedOneAllowReset := true
 	seedOneBlocked := false
 	seedOneGender := false
 
@@ -56,11 +57,12 @@ func TestUpdateAllowanceAllowed(t *testing.T) {
 	seedTwoAllowPermission := true
 	seedTwoAllowDelete := true
 	seedTwoAllowBlock := true
+	seedTwoAllowReset := true
 	seedTwoBlocked := false
 	seedTwoGender := false
 
-	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneBlocked, seedOneGender)
-	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoBlocked, seedTwoGender)
+	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneAllowReset, seedOneBlocked, seedOneGender)
+	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoAllowReset, seedTwoBlocked, seedTwoGender)
 
 	ctx := context.Background()
 
@@ -125,6 +127,7 @@ func TestUpdateAllowanceNotAllowed(t *testing.T) {
 	seedOneAllowPermission := false
 	seedOneAllowDelete := true
 	seedOneAllowBlock := true
+	seedOneAllowReset := true
 	seedOneBlocked := false
 	seedOneGender := false
 
@@ -137,11 +140,12 @@ func TestUpdateAllowanceNotAllowed(t *testing.T) {
 	seedTwoAllowPermission := true
 	seedTwoAllowDelete := true
 	seedTwoAllowBlock := true
+	seedTwoAllowReset := true
 	seedTwoBlocked := false
 	seedTwoGender := false
 
-	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneBlocked, seedOneGender)
-	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoBlocked, seedTwoGender)
+	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneAllowReset, seedOneBlocked, seedOneGender)
+	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoAllowReset, seedTwoBlocked, seedTwoGender)
 
 	ctx := context.Background()
 
@@ -206,6 +210,7 @@ func TestUpdateWrongCreateAllowance(t *testing.T) {
 	seedOneAllowPermission := true
 	seedOneAllowDelete := true
 	seedOneAllowBlock := true
+	seedOneAllowReset := true
 	seedOneBlocked := false
 	seedOneGender := false
 
@@ -218,11 +223,12 @@ func TestUpdateWrongCreateAllowance(t *testing.T) {
 	seedTwoAllowPermission := true
 	seedTwoAllowDelete := true
 	seedTwoAllowBlock := true
+	seedTwoAllowReset := true
 	seedTwoBlocked := false
 	seedTwoGender := false
 
-	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneBlocked, seedOneGender)
-	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoBlocked, seedTwoGender)
+	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneAllowReset, seedOneBlocked, seedOneGender)
+	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoAllowReset, seedTwoBlocked, seedTwoGender)
 
 	ctx := context.Background()
 
@@ -288,6 +294,7 @@ func TestUpdateWrongPermissionAllowance(t *testing.T) {
 	seedOneAllowPermission := true
 	seedOneAllowDelete := true
 	seedOneAllowBlock := true
+	seedOneAllowReset := true
 	seedOneBlocked := false
 	seedOneGender := false
 
@@ -300,11 +307,12 @@ func TestUpdateWrongPermissionAllowance(t *testing.T) {
 	seedTwoAllowPermission := true
 	seedTwoAllowDelete := true
 	seedTwoAllowBlock := true
+	seedTwoAllowReset := true
 	seedTwoBlocked := false
 	seedTwoGender := false
 
-	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneBlocked, seedOneGender)
-	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoBlocked, seedTwoGender)
+	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneAllowReset, seedOneBlocked, seedOneGender)
+	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoAllowReset, seedTwoBlocked, seedTwoGender)
 
 	ctx := context.Background()
 
@@ -369,6 +377,7 @@ func TestUpdateWrongDeleteAllowance(t *testing.T) {
 	seedOneAllowPermission := true
 	seedOneAllowDelete := true
 	seedOneAllowBlock := true
+	seedOneAllowReset := true
 	seedOneBlocked := false
 	seedOneGender := false
 
@@ -381,11 +390,12 @@ func TestUpdateWrongDeleteAllowance(t *testing.T) {
 	seedTwoAllowPermission := true
 	seedTwoAllowDelete := true
 	seedTwoAllowBlock := true
+	seedTwoAllowReset := true
 	seedTwoBlocked := false
 	seedTwoGender := false
 
-	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneBlocked, seedOneGender)
-	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoBlocked, seedTwoGender)
+	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneAllowReset, seedOneBlocked, seedOneGender)
+	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoAllowReset, seedTwoBlocked, seedTwoGender)
 
 	ctx := context.Background()
 

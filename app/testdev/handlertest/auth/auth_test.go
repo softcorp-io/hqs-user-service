@@ -47,8 +47,9 @@ func TestAuth(t *testing.T) {
 	seedAllowPermission := true
 	seedAllowDelete := true
 	seedAllowBlock := true
+	seedAllowReset := true
 	seedBlocked := false
-	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedBlocked, seedGender)
+	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedAllowReset, seedBlocked, seedGender)
 
 	// act
 	ctx := context.Background()
@@ -78,8 +79,9 @@ func TestAuthUserBlocked(t *testing.T) {
 	seedAllowPermission := true
 	seedAllowDelete := true
 	seedAllowBlock := true
+	seedAllowReset := true
 	seedBlocked := true
-	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedBlocked, seedGender)
+	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedAllowReset, seedBlocked, seedGender)
 
 	// act
 	ctx := context.Background()
@@ -106,9 +108,10 @@ func TestAuthWrongPassword(t *testing.T) {
 	seedAllowPermission := true
 	seedAllowDelete := true
 	seedAllowBlock := true
+	seedAllowReset := true
 	seedBlocked := false
 	seedGender := false
-	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedBlocked, seedGender)
+	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedAllowReset, seedBlocked, seedGender)
 
 	// act
 	ctx := context.Background()
@@ -136,9 +139,10 @@ func TestAuthNoPassword(t *testing.T) {
 	seedAllowDelete := true
 	seedAllowPermission := true
 	seedAllowBlock := true
+	seedAllowReset := true
 	seedBlocked := false
 	seedGender := false
-	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedBlocked, seedGender)
+	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedAllowReset, seedBlocked, seedGender)
 
 	// act
 	ctx := context.Background()
@@ -166,9 +170,10 @@ func TestGetAuthHistoryValidToken(t *testing.T) {
 	seedAllowPermission := true
 	seedAllowDelete := true
 	seedAllowBlock := true
+	seedAllowReset := true
 	seedBlocked := false
 	seedGender := false
-	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedBlocked, seedGender)
+	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedAllowReset, seedBlocked, seedGender)
 
 	ctx := context.Background()
 	tokenResponseOne, err := myHandler.Auth(ctx, &proto.User{
@@ -217,9 +222,10 @@ func TestGetAuthHistoryInvalidToken(t *testing.T) {
 	seedAllowPermission := true
 	seedAllowDelete := true
 	seedAllowBlock := true
+	seedAllowReset := true
 	seedBlocked := false
 	seedGender := false
-	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedBlocked, seedGender)
+	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedAllowReset, seedBlocked, seedGender)
 
 	ctx := context.Background()
 	_, err := myHandler.Auth(ctx, &proto.User{

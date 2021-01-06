@@ -11,7 +11,7 @@ import (
 )
 
 // Seed - Seeds one user to the database.
-func Seed(name string, email string, phone string, password string, allowView bool, allowCreate bool, allowPermission bool, allowDelete bool, allowBlock bool, blocked bool, gender bool) string {
+func Seed(name string, email string, phone string, password string, allowView bool, allowCreate bool, allowPermission bool, allowDelete bool, allowBlock bool, allowReset bool, blocked bool, gender bool) string {
 	hasshedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		_ = TearDownMongoDocker()

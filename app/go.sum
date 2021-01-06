@@ -409,6 +409,8 @@ github.com/softcorp-io/hqs_proto v0.0.20 h1:Va72N4VPLngrZQ1mmh839OIYPubiLLzhPsBx
 github.com/softcorp-io/hqs_proto v0.0.20/go.mod h1:Qu8eVzq7okeCaNnznjnSXvgOHajXU3h+RY4ETc6+ME8=
 github.com/softcorp-io/hqs_proto v0.0.21 h1:kqFANrgV2XzH38CQIT/SgsuZ6y7pdlJ0r6PZy0Ufd/8=
 github.com/softcorp-io/hqs_proto v0.0.21/go.mod h1:Qu8eVzq7okeCaNnznjnSXvgOHajXU3h+RY4ETc6+ME8=
+github.com/softcorp-io/hqs_proto v0.0.22 h1:homGDmYLoi6jkjf3DnX7uc+vits6jAEh+LC9AbZ13vw=
+github.com/softcorp-io/hqs_proto v0.0.22/go.mod h1:Qu8eVzq7okeCaNnznjnSXvgOHajXU3h+RY4ETc6+ME8=
 github.com/softcorp-io/hqs_user_service v0.0.19 h1:RD1iMZY95N3SIITLJHsQFMlhneEW4b4szX6hnh0mvyg=
 github.com/soheilhy/cmux v0.1.4/go.mod h1:IM3LyeVVIOuxMH7sFAkER9+bJ4dT7Ms6E4xg4kGIyLM=
 github.com/spf13/cobra v0.0.2-0.20171109065643-2da4a54c5cee/go.mod h1:1l0Ry5zgKvJasoi3XT1TypsSe7PqH0Sj9dhYf7v3XqQ=

@@ -44,6 +44,7 @@ func TestDeleteAllowed(t *testing.T) {
 	seedOneAllowPermission := true
 	seedOneAllowDelete := true
 	seedOneAllowBlock := true
+	seedOneAllowReset := true
 	seedOneBlocked := false
 	seedOneGender := false
 
@@ -56,11 +57,12 @@ func TestDeleteAllowed(t *testing.T) {
 	seedTwoAllowPermission := true
 	seedTwoAllowDelete := true
 	seedTwoAllowBlock := true
+	seedTwoAllowReset := true
 	seedTwoBlocked := false
 	seedTwoGender := false
 
-	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneBlocked, seedOneGender)
-	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoBlocked, seedTwoGender)
+	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneAllowReset, seedOneBlocked, seedOneGender)
+	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoAllowReset, seedTwoBlocked, seedTwoGender)
 
 	ctx := context.Background()
 	tokenResponse, err := myHandler.Auth(ctx, &proto.User{
@@ -108,6 +110,7 @@ func TestDeleteNotAllowed(t *testing.T) {
 	seedOneAllowPermission := true
 	seedOneAllowDelete := false
 	seedOneAllowBlock := true
+	seedOneAllowReset := true
 	seedOneBlocked := false
 	seedOneGender := false
 
@@ -120,11 +123,12 @@ func TestDeleteNotAllowed(t *testing.T) {
 	seedTwoAllowPermission := true
 	seedTwoAllowDelete := true
 	seedTwoAllowBlock := true
+	seedTwoAllowReset := true
 	seedTwoBlocked := false
 	seedTwoGender := false
 
-	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneBlocked, seedOneGender)
-	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoBlocked, seedTwoGender)
+	_ = mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneAllowReset, seedOneBlocked, seedOneGender)
+	id2 := mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoAllowReset, seedTwoBlocked, seedTwoGender)
 
 	ctx := context.Background()
 	tokenResponse, err := myHandler.Auth(ctx, &proto.User{
@@ -172,6 +176,7 @@ func TestDeleteIllegalToken(t *testing.T) {
 	seedOneAllowPermission := true
 	seedOneAllowDelete := true
 	seedOneAllowBlock := true
+	seedOneAllowReset := true
 	seedOneBlocked := false
 	seedOneGender := false
 
@@ -184,11 +189,12 @@ func TestDeleteIllegalToken(t *testing.T) {
 	seedTwoAllowPermission := true
 	seedTwoAllowDelete := true
 	seedTwoAllowBlock := true
+	seedTwoAllowReset := true
 	seedTwoBlocked := false
 	seedTwoGender := false
 
-	id1 := mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneBlocked, seedOneGender)
-	_ = mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoBlocked, seedTwoGender)
+	id1 := mock.Seed(seedOneName, seedOneEmail, seedOnePhone, seedOnePassword, seedOneAllowView, seedOneAllowCreate, seedOneAllowPermission, seedOneAllowDelete, seedOneAllowBlock, seedOneAllowReset, seedOneBlocked, seedOneGender)
+	_ = mock.Seed(seedTwoName, seedTwoEmail, seedTwoPhone, seedTwoPassword, seedTwoAllowView, seedTwoAllowCreate, seedTwoAllowPermission, seedTwoAllowDelete, seedTwoAllowBlock, seedTwoAllowReset, seedTwoBlocked, seedTwoGender)
 
 	// arrange
 	// build context with token

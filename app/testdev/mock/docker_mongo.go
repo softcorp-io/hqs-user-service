@@ -59,9 +59,7 @@ func SetupDockerPostgres() error {
 	// set global pool
 	mongoPool = pool
 
-	if err := TearDownMongoDocker(); err != nil {
-		zapLog.Fatal("Could not tear down docker")
-	}
+	TearDownMongoDocker()
 
 	opts := dockertest.RunOptions{
 		Repository:   "mongo",

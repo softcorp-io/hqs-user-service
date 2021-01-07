@@ -1,0 +1,8 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: hqs-user-service
+spec:
+  backend:
+    serviceName: hqs-user-service
+    servicePort: 9000

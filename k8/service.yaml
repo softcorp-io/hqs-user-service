@@ -10,7 +10,7 @@ spec:
   type: NodePort
   ports:
   - port: 443
-    targetPort: 8443
+    targetPort: 9000
     protocol: TCP
     name: hqs-user-port
   selector:

@@ -1,27 +1,17 @@
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    cloud.google.com/app-protocols: '{"hqs-user-port":"HTTP2"}'
   name: hqs-user-service
+  labels:
+    app: hqs-user-service
 spec:
+  type: NodePort
+  ports:
+  - port: 443
+    targetPort: 8443
+    protocol: TCP
+    name: hqs-user-port
   selector:
     app: hqs-user-service
-  type: ClusterIP
-  clusterIP: None  # headless service
-  ports:
-  - name: hqs-user-http2
-    protocol: TCP
-    port: 9000  # no targetPort for headless service

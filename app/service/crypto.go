@@ -394,7 +394,7 @@ func (srv *TokenService) GetAuthHistory(ctx context.Context, user *userProto.Use
 // AddAuthToHistory - adds an authentication attempt to user history
 func (srv *TokenService) AddAuthToHistory(ctx context.Context, user *userProto.User, token string, valid bool, typeOf string, key []byte) error {
 	// decode the token
-	claims, err := srv.Decode(ctx, token, UserCryptoKey)
+	claims, err := srv.Decode(ctx, token, key)
 	if err != nil {
 		return err
 	}

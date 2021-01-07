@@ -15,7 +15,7 @@ spec:
         spec:
           containers:
             - name: hqs-user-service
-              image: gcr.io/softcorp-hqs/hqs-user-service:v0.0.45
+              image: gcr.io/softcorp-hqs/hqs-user-service:v0.0.46
               imagePullPolicy: Always
               volumeMounts: 
               - name: image-storage

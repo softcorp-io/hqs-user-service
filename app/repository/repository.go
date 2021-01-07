@@ -190,6 +190,7 @@ func (u *User) ValidateAllowances() error {
 	deleteNoViewAccess := u.AllowDelete && !u.AllowView
 	permissionNoViewAccess := u.AllowPermission && !u.AllowView
 	blockNoViewAccess := u.AllowBlock && !u.AllowView
+	resetNoViewAccess := u.AllowResetPassword && !u.AllowView
 	if createNoViewAccess {
 		return errors.New("Create access bot allowed without view & permission access")
 	}
@@ -201,6 +202,9 @@ func (u *User) ValidateAllowances() error {
 	}
 	if blockNoViewAccess {
 		return errors.New("Block access not allowed without view access")
+	}
+	if resetNoViewAccess {
+		return errors.New("Reset access not allowed without view access")
 	}
 	return nil
 }

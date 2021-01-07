@@ -56,6 +56,7 @@ func NewHandler(repo repository.Repository, stor storage.Storage, tokenService a
 
 // Ping - used for other service to check if live
 func (s *Handler) Ping(ctx context.Context, req *userProto.Request) (*userProto.Response, error) {
+	s.zapLog.Info("Recieved new request")
 	return &userProto.Response{}, nil
 }
 

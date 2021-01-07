@@ -29,7 +29,7 @@ type authable interface {
 	BlockToken(ctx context.Context, tokenID string) error
 	BlockAllUserToken(ctx context.Context, userID string) error
 	GetAuthHistory(ctx context.Context, user *userProto.User) ([]*userProto.Auth, error)
-	AddAuthToHistory(ctx context.Context, user *userProto.User, token string, success bool, typeOf string) error
+	AddAuthToHistory(ctx context.Context, user *userProto.User, token string, success bool, typeOf string, key []byte) error
 	DeleteUserAuthHistory(ctx context.Context, user *userProto.User) error
 	DeleteUserTokenHistory(ctx context.Context, user *userProto.User) error
 	GetResetPasswordCryptoKey() []byte
@@ -871,7 +871,7 @@ func (s *Handler) Auth(ctx context.Context, req *userProto.User) (*userProto.Tok
 	}
 
 	// todo: change longiture and lattitude
-	if err = s.tokenService.AddAuthToHistory(ctx, repository.UnmarshalUser(user), token, true, "auth"); err != nil {
+	if err = s.tokenService.AddAuthToHistory(ctx, repository.UnmarshalUser(user), token, true, "auth", s.tokenService.GetUserCryptoKey()); err != nil {
 		s.zapLog.Warn(fmt.Sprintf("Could not add to auth history with err : %v", err))
 	}
 
@@ -970,7 +970,7 @@ func (s *Handler) EmailResetPasswordToken(ctx context.Context, req *userProto.Us
 	}
 
 	// todo: change longiture and lattitude
-	if err = s.tokenService.AddAuthToHistory(ctx, repository.UnmarshalUser(resultUser), resetToken, true, "reset password"); err != nil {
+	if err = s.tokenService.AddAuthToHistory(ctx, repository.UnmarshalUser(resultUser), resetToken, true, "reset password", s.tokenService.GetResetPasswordCryptoKey()); err != nil {
 		s.zapLog.Warn(fmt.Sprintf("Could not add to auth history with err : %v", err))
 	}
 

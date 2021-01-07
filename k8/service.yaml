@@ -1,17 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    cloud.google.com/app-protocols: '{"hqs-user-port":"HTTP2"}'
   name: hqs-user-service
-  labels:
-    app: hqs-user-service
 spec:
-  type: NodePort
-  ports:
-  - port: 443
-    targetPort: 9000
-    protocol: TCP
-    name: hqs-user-port
   selector:
     app: hqs-user-service
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+  - 130.226.157.37/32 # Home
+  - 93.160.3.177/32 # Cph 
+  ports:
+    - protocol: TCP
+      port: 9000

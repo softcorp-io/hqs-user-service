@@ -41,6 +41,7 @@ func Seed(name string, email string, phone string, password string, allowView bo
 		Blocked:         blocked,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
+		Birthday:        time.Now(),
 	}
 
 	_, err = mongoUserCollection.InsertOne(context.Background(), user)

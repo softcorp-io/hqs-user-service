@@ -29,7 +29,7 @@ type User struct {
 	Image              string    `bson:"image" json:"image"`
 	Description        string    `bson:"description" json:"description"`
 	Title              string    `bson:"title" json:"title"`
-	BirthDate          time.Time `bson:"birth_date" json:"birth_date"`
+	Birthday           time.Time `bson:"birthday" json:"birthday"`
 	Password           string    `bson:"password" json:"password"`
 	AllowView          bool      `bson:"allow_view" json:"allow_view"`
 	AllowCreate        bool      `bson:"allow_create" json:"allow_create"`
@@ -88,7 +88,11 @@ func MarshalUserCollection(users []*userProto.User) []*User {
 func MarshalUser(user *userProto.User) *User {
 	createdAt, _ := ptypes.Timestamp(user.CreatedAt)
 	updatedAt, _ := ptypes.Timestamp(user.UpdatedAt)
-	bithDate, _ := ptypes.Timestamp(user.BirthDate)
+	birthday, err := time.Parse("2006-01-02", user.Birthday)
+	// if date is not correct, make it time.now()
+	if err != nil {
+		birthday = time.Now()
+	}
 	return &User{
 		ID:                 user.Id,
 		Name:               user.Name,
@@ -111,7 +115,7 @@ func MarshalUser(user *userProto.User) *User {
 		Admin:              user.Admin,
 		CreatedAt:          createdAt,
 		UpdatedAt:          updatedAt,
-		BirthDate:          bithDate,
+		Birthday:           birthday,
 	}
 }
 
@@ -128,7 +132,7 @@ func UnmarshalUserCollection(users []*User) []*userProto.User {
 func UnmarshalUser(user *User) *userProto.User {
 	createdAt, _ := ptypes.TimestampProto(user.CreatedAt)
 	updatedAt, _ := ptypes.TimestampProto(user.UpdatedAt)
-	birthDate, _ := ptypes.TimestampProto(user.BirthDate)
+	birthday := user.Birthday.String()
 	return &userProto.User{
 		Id:                 user.ID,
 		Name:               user.Name,
@@ -151,7 +155,7 @@ func UnmarshalUser(user *User) *userProto.User {
 		Admin:              user.Admin,
 		CreatedAt:          createdAt,
 		UpdatedAt:          updatedAt,
-		BirthDate:          birthDate,
+		Birthday:           birthday,
 	}
 }
 
@@ -251,6 +255,7 @@ func (u *User) prepare(action string) {
 		u.Admin = false
 		u.CreatedAt = time.Now()
 		u.UpdatedAt = time.Now()
+		u.Birthday = time.Now()
 		if u.Gender {
 			u.Image = "hqs/users/shared/profileImage/femaleProfileImage.png"
 		} else {
@@ -272,6 +277,7 @@ func (u *User) prepare(action string) {
 		u.DialCode = strings.TrimSpace(u.DialCode)
 		u.CreatedAt = time.Now()
 		u.UpdatedAt = time.Now()
+		u.Birthday = time.Now()
 		if u.Gender {
 			u.Image = "hqs/users/shared/profileImage/femaleProfileImage.png"
 		} else {
@@ -363,7 +369,7 @@ func (r *MongoRepository) UpdateProfile(ctx context.Context, user *User) error {
 			"gender":       user.Gender,
 			"description":  user.Description,
 			"title":        user.Title,
-			"birth_date":   user.BirthDate,
+			"birthday":     user.Birthday,
 			"updated_at":   user.UpdatedAt,
 		},
 	}

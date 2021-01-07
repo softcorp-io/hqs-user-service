@@ -24,4 +24,4 @@ spec:
   ports:
   - name: hqs-user-http2
     protocol: TCP
-    port: 8081  # no targetPort for headless service
+    port: 9000  # no targetPort for headless service

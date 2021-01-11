@@ -397,6 +397,8 @@ func (r *MongoRepository) UpdateAllowances(ctx context.Context, user *User) erro
 		return err
 	}
 
+	user.prepare("update")
+
 	updateUser := bson.M{
 		"$set": bson.M{
 			"allow_view":           user.AllowView,

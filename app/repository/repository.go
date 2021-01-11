@@ -272,7 +272,6 @@ func (u *User) prepare(action string) {
 		u.Admin = false
 		u.CountryCode = strings.TrimSpace(u.CountryCode)
 		u.DialCode = strings.TrimSpace(u.DialCode)
-		u.UpdatedAt = time.Now()
 	case "root":
 		u.Name = strings.TrimSpace(u.Name)
 		u.Email = strings.TrimSpace(u.Email)
@@ -374,7 +373,7 @@ func (r *MongoRepository) UpdateProfile(ctx context.Context, user *User) error {
 			"description":  user.Description,
 			"title":        user.Title,
 			"birthday":     user.Birthday,
-			"updated_at":   user.UpdatedAt,
+			"updated_at":   time.Now(),
 		},
 	}
 
@@ -407,7 +406,7 @@ func (r *MongoRepository) UpdateAllowances(ctx context.Context, user *User) erro
 			"allow_delete":         user.AllowDelete,
 			"allow_block":          user.AllowBlock,
 			"allow_reset_password": user.AllowResetPassword,
-			"updated_at":           user.UpdatedAt,
+			"updated_at":           time.Now(),
 		},
 	}
 
@@ -431,7 +430,7 @@ func (r *MongoRepository) UpdateImage(ctx context.Context, user *User) error {
 	updateUser := bson.M{
 		"$set": bson.M{
 			"image":      user.Image,
-			"updated_at": user.UpdatedAt,
+			"updated_at": time.Now(),
 		},
 	}
 
@@ -459,7 +458,7 @@ func (r *MongoRepository) UpdatePassword(ctx context.Context, user *User) error 
 	updateUser := bson.M{
 		"$set": bson.M{
 			"password":   user.Password,
-			"updated_at": user.UpdatedAt,
+			"updated_at": time.Now(),
 		},
 	}
 

@@ -12,14 +12,13 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	crypto "github.com/softcorp-io/hqs-user-service/crypto"
 	database "github.com/softcorp-io/hqs-user-service/database"
-	email "github.com/softcorp-io/hqs-user-service/email"
 	handler "github.com/softcorp-io/hqs-user-service/handler"
-	privilege "github.com/softcorp-io/hqs-user-service/privilege"
 	repository "github.com/softcorp-io/hqs-user-service/repository"
-	service "github.com/softcorp-io/hqs-user-service/service"
 	spaces "github.com/softcorp-io/hqs-user-service/spaces"
 	storage "github.com/softcorp-io/hqs-user-service/storage"
+	emailProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_email_service"
 	privilegeProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_privilege_service"
 	userProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
 	"go.uber.org/zap"
@@ -99,7 +98,7 @@ func Run(zapLog *zap.Logger, wg *sync.WaitGroup) {
 	// setup tokenservice
 	authCollection := database.Collection(collections.authCollection)
 	tokenCollection := database.Collection(collections.tokenCollection)
-	tokenService, err := service.NewTokenService(authCollection, tokenCollection, zapLog)
+	tokenService, err := crypto.NewTokenService(authCollection, tokenCollection, zapLog)
 	if err != nil {
 		zapLog.Fatal(fmt.Sprintf("Could not start token service with err %v", err))
 	}
@@ -108,34 +107,50 @@ func Run(zapLog *zap.Logger, wg *sync.WaitGroup) {
 	stor := storage.NewSpaceStorage(spc)
 
 	// setup email client
-	emailEnv, err := email.GetEmailEnv()
-	if err != nil {
-		zapLog.Fatal(fmt.Sprintf("Could not setup email env with err %v", err))
+	emailServiceIP, ok := os.LookupEnv("EMAIL_SERVICE_IP")
+	if !ok {
+		zapLog.Fatal("Could not get email service ip")
 	}
-	emailClient, emailConn, err := email.NewEmailClient(context.Background(), zapLog, emailEnv.IP+":"+emailEnv.Port)
+	emailServicePort, ok := os.LookupEnv("EMAIL_SERVICE_PORT")
+	if !ok {
+		zapLog.Fatal("Could not get email service port")
+	}
+	emailConn, err := grpc.DialContext(context.Background(), emailServiceIP+":"+emailServicePort, grpc.WithInsecure())
 	if err != nil {
-		zapLog.Error(fmt.Sprintf("Could not create email client with err %v", err))
-	} else {
-		defer emailConn.Close()
+		zapLog.Fatal(fmt.Sprintf("Could not dial email service with err %v", err))
+	}
+	defer emailConn.Close()
+	emailClient := emailProto.NewEmailServiceClient(emailConn)
+	_, err = emailClient.Ping(context.Background(), &emailProto.Request{})
+	if err != nil {
+		zapLog.Fatal(fmt.Sprintf("Could not ping email service with err %v", err))
 	}
 
 	// setup privilege service
-	privilegeEnv, err := privilege.GetPrivilegeEnv()
-	if err != nil {
-		zapLog.Fatal(fmt.Sprintf("Could not setup privilege env with err %v", err))
+	privilegeServiceIP, ok := os.LookupEnv("PRIVILEGE_SERVICE_IP")
+	if !ok {
+		zapLog.Fatal("Could not get privilege service ip")
 	}
-	privilegeClient, privilegeConn, err := privilege.NewPrivilegeClient(context.Background(), zapLog, privilegeEnv.IP+":"+privilegeEnv.Port)
+	privilegeServicePort, ok := os.LookupEnv("PRIVILEGE_SERVICE_PORT")
+	if !ok {
+		zapLog.Fatal("Could not get privilege service port")
+	}
+	privilegeConn, err := grpc.DialContext(context.Background(), privilegeServiceIP+":"+privilegeServicePort, grpc.WithInsecure())
 	if err != nil {
-		zapLog.Error(fmt.Sprintf("Could not create privilege client with err %v", err))
-	} else {
-		defer privilegeConn.Close()
+		zapLog.Fatal(fmt.Sprintf("Could not dial privilege service with err %v", err))
+	}
+	defer privilegeConn.Close()
+	privilegeClient := privilegeProto.NewPrivilegeServiceClient(privilegeConn)
+	_, err = privilegeClient.Ping(context.Background(), &privilegeProto.Request{})
+	if err != nil {
+		zapLog.Fatal(fmt.Sprintf("Could not ping email service with err %v", err))
 	}
 
 	// use above to create handler
-	handle := handler.NewHandler(repo, stor, tokenService, *emailClient, *privilegeClient, zapLog)
+	handle := handler.NewHandler(repo, stor, tokenService, emailClient, privilegeClient, zapLog)
 
 	// create root
-	if err := createRoot(zapLog, repo, *privilegeClient); err != nil {
+	if err := createRoot(zapLog, repo, privilegeClient); err != nil {
 		zapLog.Fatal(fmt.Sprintf("Could not setup root user with err %v", err))
 
 	}
@@ -182,7 +197,7 @@ func createRoot(zapLog *zap.Logger, repo *repository.MongoRepository, privilegeC
 
 	rootPrivilege, err := privilegeClient.GetRoot(ctx, &privilegeProto.Request{})
 	if err != nil {
-		zapLog.Error(fmt.Sprintf("Could not get root certificate with err %v", err))
+		zapLog.Error(fmt.Sprintf("Could not get root privilege with err %v", err))
 		return err
 	}
 

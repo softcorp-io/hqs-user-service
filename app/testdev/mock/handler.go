@@ -9,9 +9,9 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
 
+	service "github.com/softcorp-io/hqs-user-service/crypto"
 	handler "github.com/softcorp-io/hqs-user-service/handler"
 	repository "github.com/softcorp-io/hqs-user-service/repository"
-	service "github.com/softcorp-io/hqs-user-service/service"
 	emailProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_email_service"
 	privilegeProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_privilege_service"
 	"github.com/stretchr/testify/mock"

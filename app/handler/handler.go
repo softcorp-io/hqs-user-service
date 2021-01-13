@@ -11,12 +11,12 @@ import (
 	"time"
 
 	uuid "github.com/satori/go.uuid"
+	crypto "github.com/softcorp-io/hqs-user-service/crypto"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/metadata"
 
 	repository "github.com/softcorp-io/hqs-user-service/repository"
-	service "github.com/softcorp-io/hqs-user-service/service"
 	storage "github.com/softcorp-io/hqs-user-service/storage"
 	emailProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_email_service"
 	privilegeProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_privilege_service"
@@ -25,7 +25,7 @@ import (
 
 // authable - interface used to decode/encode tokens.
 type authable interface {
-	Decode(ctx context.Context, token string, key []byte) (*service.CustomClaims, error)
+	Decode(ctx context.Context, token string, key []byte) (*crypto.CustomClaims, error)
 	Encode(ctx context.Context, user *userProto.User, key []byte, expiresAt time.Duration) (string, error)
 	BlockToken(ctx context.Context, tokenID string) error
 	BlockAllUserToken(ctx context.Context, userID string) error
@@ -45,15 +45,15 @@ type authable interface {
 type Handler struct {
 	repository      repository.Repository
 	storage         storage.Storage
-	tokenService    authable
+	crypto          authable
 	emailClient     emailProto.EmailServiceClient
 	privilegeClient privilegeProto.PrivilegeServiceClient
 	zapLog          *zap.Logger
 }
 
 // NewHandler returns a Handler object
-func NewHandler(repo repository.Repository, stor storage.Storage, tokenService authable, emailClient emailProto.EmailServiceClient, privilegeClient privilegeProto.PrivilegeServiceClient, zapLog *zap.Logger) *Handler {
-	return &Handler{repo, stor, tokenService, emailClient, privilegeClient, zapLog}
+func NewHandler(repo repository.Repository, stor storage.Storage, crypto authable, emailClient emailProto.EmailServiceClient, privilegeClient privilegeProto.PrivilegeServiceClient, zapLog *zap.Logger) *Handler {
+	return &Handler{repo, stor, crypto, emailClient, privilegeClient, zapLog}
 }
 
 // Ping - used for other service to check if live
@@ -121,7 +121,7 @@ func (s *Handler) GenerateSignupToken(ctx context.Context, req *userProto.User) 
 
 	req.Id = uuid.NewV4().String()
 
-	token, err := s.tokenService.Encode(context.Background(), req, s.tokenService.GetUserCryptoKey(), s.tokenService.GetSignupTokenTTL())
+	token, err := s.crypto.Encode(context.Background(), req, s.crypto.GetUserCryptoKey(), s.crypto.GetSignupTokenTTL())
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not encode signup with err %v", err))
 		return &userProto.Token{}, err
@@ -638,12 +638,12 @@ func (s *Handler) Delete(ctx context.Context, req *userProto.User) (*userProto.R
 	}
 
 	// also delete users auth history
-	if err := s.tokenService.DeleteUserAuthHistory(ctx, req); err != nil {
+	if err := s.crypto.DeleteUserAuthHistory(ctx, req); err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not delete users auth history from crypto with err %v", err))
 	}
 
 	// same with token history
-	if err := s.tokenService.DeleteUserTokenHistory(ctx, req); err != nil {
+	if err := s.crypto.DeleteUserTokenHistory(ctx, req); err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not delete users auth history from crypto with err %v", err))
 	}
 
@@ -692,14 +692,14 @@ func (s *Handler) Auth(ctx context.Context, req *userProto.User) (*userProto.Tok
 		return &userProto.Token{}, err
 	}
 
-	token, err := s.tokenService.Encode(context.Background(), repository.UnmarshalUser(user), s.tokenService.GetUserCryptoKey(), s.tokenService.GetUserTokenTTL())
+	token, err := s.crypto.Encode(context.Background(), repository.UnmarshalUser(user), s.crypto.GetUserCryptoKey(), s.crypto.GetUserTokenTTL())
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not encode user with err  %v", err))
 		return &userProto.Token{}, err
 	}
 
 	// todo: change longiture and lattitude
-	if err = s.tokenService.AddAuthToHistory(ctx, repository.UnmarshalUser(user), token, true, "auth", s.tokenService.GetUserCryptoKey()); err != nil {
+	if err = s.crypto.AddAuthToHistory(ctx, repository.UnmarshalUser(user), token, true, "auth", s.crypto.GetUserCryptoKey()); err != nil {
 		s.zapLog.Warn(fmt.Sprintf("Could not add to auth history with err : %v", err))
 	}
 
@@ -721,7 +721,7 @@ func (s *Handler) BlockToken(ctx context.Context, req *userProto.Token) (*userPr
 		return &userProto.Token{}, err
 	}
 
-	claims, err := s.tokenService.Decode(context.Background(), req.Token, s.tokenService.GetUserCryptoKey())
+	claims, err := s.crypto.Decode(context.Background(), req.Token, s.crypto.GetUserCryptoKey())
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not decode token with err  %v", err))
 		return &userProto.Token{}, err
@@ -732,7 +732,7 @@ func (s *Handler) BlockToken(ctx context.Context, req *userProto.Token) (*userPr
 		return &userProto.Token{}, errors.New("Token user does not match auth user")
 	}
 
-	if err := s.tokenService.BlockToken(context.Background(), claims.ID); err != nil {
+	if err := s.crypto.BlockToken(context.Background(), claims.ID); err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not block token with err  %v", err))
 		return &userProto.Token{}, err
 	}
@@ -764,14 +764,14 @@ func (s *Handler) EmailResetPasswordToken(ctx context.Context, req *userProto.Us
 	}
 
 	// generate token
-	resetToken, err := s.tokenService.Encode(context.Background(), req, s.tokenService.GetResetPasswordCryptoKey(), s.tokenService.GetResetPasswordTokenTTL())
+	resetToken, err := s.crypto.Encode(context.Background(), req, s.crypto.GetResetPasswordCryptoKey(), s.crypto.GetResetPasswordTokenTTL())
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not encode reset password with err %v", err))
 		return &userProto.Response{}, err
 	}
 
 	// todo: change longiture and lattitude
-	if err = s.tokenService.AddAuthToHistory(ctx, repository.UnmarshalUser(resultUser), resetToken, true, "reset password", s.tokenService.GetResetPasswordCryptoKey()); err != nil {
+	if err = s.crypto.AddAuthToHistory(ctx, repository.UnmarshalUser(resultUser), resetToken, true, "reset password", s.crypto.GetResetPasswordCryptoKey()); err != nil {
 		s.zapLog.Warn(fmt.Sprintf("Could not add to auth history with err : %v", err))
 	}
 
@@ -796,7 +796,7 @@ func (s *Handler) ResetPassword(ctx context.Context, req *userProto.ResetPasswor
 	s.zapLog.Info("Recieved new request")
 
 	// check that the reset token is valid
-	claims, err := s.tokenService.Decode(context.Background(), req.Token, s.tokenService.GetResetPasswordCryptoKey())
+	claims, err := s.crypto.Decode(context.Background(), req.Token, s.crypto.GetResetPasswordCryptoKey())
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not decode reset token with err %v", err))
 		return &userProto.Response{}, err
@@ -817,7 +817,7 @@ func (s *Handler) ResetPassword(ctx context.Context, req *userProto.ResetPasswor
 	}
 
 	// when password is updated, block token
-	if err := s.tokenService.BlockToken(ctx, claims.ID); err != nil {
+	if err := s.crypto.BlockToken(ctx, claims.ID); err != nil {
 		s.zapLog.Error("Could not block the token, the user gave to reset his password")
 		return &userProto.Response{}, err
 	}
@@ -837,7 +837,7 @@ func (s *Handler) BlockTokenByID(ctx context.Context, req *userProto.BlockTokenR
 	}
 
 	// check if the user has rights to the token
-	authHistory, err := s.tokenService.GetAuthHistory(context.Background(), actualUser)
+	authHistory, err := s.crypto.GetAuthHistory(context.Background(), actualUser)
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not get auth history with err  %v", err))
 		return &userProto.Token{}, err
@@ -857,7 +857,7 @@ func (s *Handler) BlockTokenByID(ctx context.Context, req *userProto.BlockTokenR
 		return &userProto.Token{}, errors.New("Token not present or user not allowed to block it")
 	}
 
-	if err := s.tokenService.BlockToken(context.Background(), req.TokenID); err != nil {
+	if err := s.crypto.BlockToken(context.Background(), req.TokenID); err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not block token with err  %v", err))
 		return &userProto.Token{}, err
 	}
@@ -879,7 +879,7 @@ func (s *Handler) BlockUsersTokens(ctx context.Context, req *userProto.Request) 
 		return &userProto.Response{}, err
 	}
 
-	if err := s.tokenService.BlockAllUserToken(context.Background(), actualUser.Id); err != nil {
+	if err := s.crypto.BlockAllUserToken(context.Background(), actualUser.Id); err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not block all users tokens with err  %v", err))
 		return &userProto.Response{}, err
 	}
@@ -902,7 +902,7 @@ func (s *Handler) GetAuthHistory(ctx context.Context, req *userProto.Request) (*
 	}
 
 	// get token history
-	authHistory, err := s.tokenService.GetAuthHistory(context.Background(), actualUser)
+	authHistory, err := s.crypto.GetAuthHistory(context.Background(), actualUser)
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not get auth history with err  %v", err))
 		return &userProto.AuthHistory{}, err
@@ -918,7 +918,7 @@ func (s *Handler) GetAuthHistory(ctx context.Context, req *userProto.Request) (*
 func (s *Handler) ValidateToken(ctx context.Context, req *userProto.Token) (*userProto.Token, error) {
 	s.zapLog.Info("Recieved new request")
 
-	claims, err := s.tokenService.Decode(context.Background(), req.Token, s.tokenService.GetUserCryptoKey())
+	claims, err := s.crypto.Decode(context.Background(), req.Token, s.crypto.GetUserCryptoKey())
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not decode token with err  %v", err))
 		return &userProto.Token{}, err
@@ -976,7 +976,7 @@ func (s *Handler) validateSignupToken(ctx context.Context) (*userProto.User, err
 		return nil, errors.New("Token is empty")
 	}
 
-	claims, err := s.tokenService.Decode(context.Background(), token[0], s.tokenService.GetUserCryptoKey())
+	claims, err := s.crypto.Decode(context.Background(), token[0], s.crypto.GetUserCryptoKey())
 	if err != nil {
 		return nil, err
 	}
@@ -1009,7 +1009,7 @@ func (s *Handler) validateTokenHelper(ctx context.Context, privilege *privilegeP
 		return nil, errors.New("Token is empty")
 	}
 
-	claims, err := s.tokenService.Decode(context.Background(), token[0], s.tokenService.GetUserCryptoKey())
+	claims, err := s.crypto.Decode(context.Background(), token[0], s.crypto.GetUserCryptoKey())
 	if err != nil {
 		return nil, err
 	}

@@ -10,26 +10,26 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc/metadata"
 
-	service "github.com/softcorp-io/hqs-user-service/service"
+	crypto "github.com/softcorp-io/hqs-user-service/crypto"
 	mock "github.com/softcorp-io/hqs-user-service/testdev/mock"
 	proto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_user_service"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var myService *service.TokenService
+var myService *crypto.TokenService
 var mongoAuthCollection *mongo.Collection
 var mongoTokenCollection *mongo.Collection
 
 func TestMain(m *testing.M) {
-	service, tempMongoAuthCollection, tempMongoTokenCollection, err := mock.GetService()
+	crypto, tempMongoAuthCollection, tempMongoTokenCollection, err := mock.GetCrypto()
 	if err != nil {
 		mock.TearDownMongoDocker()
 		log.Fatalf("Could not setup handler: %v", err)
 	}
 	mongoAuthCollection = tempMongoAuthCollection
 	mongoTokenCollection = tempMongoTokenCollection
-	myService = service
+	myService = crypto
 
 	code := m.Run()
 

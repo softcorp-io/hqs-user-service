@@ -3,14 +3,14 @@ package mock
 import (
 	"os"
 
+	"github.com/softcorp-admin/hqs-service-user/service"
+	crypto "github.com/softcorp-io/hqs-user-service/crypto"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
-
-	service "github.com/softcorp-io/hqs-user-service/service"
 )
 
-// GetService - returns a service, connected to a docker container.
-func GetService() (*service.TokenService, *mongo.Collection, *mongo.Collection, error) {
+// GetCrypto - returns a service, connected to a docker container.
+func GetCrypto() (*service.TokenService, *mongo.Collection, *mongo.Collection, error) {
 	err := SetupDockerMongo()
 	if err != nil {
 		_ = TearDownMongoDocker()
@@ -27,7 +27,7 @@ func GetService() (*service.TokenService, *mongo.Collection, *mongo.Collection, 
 
 	zapLog, _ := zap.NewProduction()
 
-	tokenService, err := service.NewTokenService(mongoAuthCollection, mongoTokenCollection, zapLog)
+	tokenService, err := crypto.NewTokenService(mongoAuthCollection, mongoTokenCollection, zapLog)
 	if err != nil {
 		return nil, nil, nil, err
 	}

@@ -69,21 +69,14 @@ func TestCreateAllowed(t *testing.T) {
 	createEmail := "testuser@softcorp.io"
 	createPhone := "+45 88 88 88 88"
 	createPassword := "TestPassword1234asda"
-	createAllowView := true
-	createAllowCreate := true
-	createAllowPermission := true
-	createAllowDelete := true
 
 	// act
 	userResponse, err := myHandler.Create(ctx, &proto.User{
-		Name:            createName,
-		Email:           createEmail,
-		Phone:           createPhone,
-		Password:        createPassword,
-		AllowView:       createAllowView,
-		AllowCreate:     createAllowCreate,
-		AllowPermission: createAllowPermission,
-		AllowDelete:     createAllowDelete,
+		Name:        createName,
+		Email:       createEmail,
+		Phone:       createPhone,
+		Password:    createPassword,
+		PrivilegeID: "someID",
 	})
 
 	// assert that we can get the user with above information
@@ -138,27 +131,18 @@ func TestCreateDuplicateEmail(t *testing.T) {
 	createEmail := seedEmail
 	createPhone := "+45 88 88 88 88"
 	createPassword := "TestPassword1234asda"
-	createAllowView := true
-	createAllowCreate := true
-	createAllowPermission := true
-	createAllowDelete := true
-	createAllowBlock := true
 	createBlocked := false
 	createGender := false
 
 	// act
 	userResponse, err := myHandler.Create(ctx, &proto.User{
-		Name:            createName,
-		Email:           createEmail,
-		Phone:           createPhone,
-		Password:        createPassword,
-		AllowView:       createAllowView,
-		AllowCreate:     createAllowCreate,
-		AllowPermission: createAllowPermission,
-		AllowDelete:     createAllowDelete,
-		AllowBlock:      createAllowBlock,
-		Blocked:         createBlocked,
-		Gender:          createGender,
+		Name:        createName,
+		Email:       createEmail,
+		Phone:       createPhone,
+		Password:    createPassword,
+		PrivilegeID: "someID",
+		Blocked:     createBlocked,
+		Gender:      createGender,
 	})
 
 	// assert that we can get the user with above information
@@ -204,21 +188,14 @@ func TestCreateNotAllowed(t *testing.T) {
 	createEmail := "testuser@softcorp.io"
 	createPhone := "+45 88 88 88 88"
 	createPassword := "TestPassword1234asda"
-	createAllowView := true
-	createAllowCreate := false
-	createAllowPermission := false
-	createAllowDelete := true
 
 	// act
 	userResponse, err := myHandler.Create(ctx, &proto.User{
-		Name:            createName,
-		Email:           createEmail,
-		Phone:           createPhone,
-		Password:        createPassword,
-		AllowView:       createAllowView,
-		AllowCreate:     createAllowCreate,
-		AllowPermission: createAllowPermission,
-		AllowDelete:     createAllowDelete,
+		Name:        createName,
+		Email:       createEmail,
+		Phone:       createPhone,
+		Password:    createPassword,
+		PrivilegeID: "someID",
 	})
 
 	// assert that we cannot get
@@ -270,27 +247,18 @@ func TestCreateIllegalName(t *testing.T) {
 	createEmail := "testuser@softcorp.io"
 	createPhone := "+45 88 88 88 88"
 	createPassword := "TestPassword1234asda"
-	createAllowView := true
-	createAllowCreate := false
-	createAllowPermission := true
-	createAllowDelete := true
-	createAllowBlock := true
 	createBlocked := false
 	createGender := false
 
 	// act
 	userResponse, err := myHandler.Create(ctx, &proto.User{
-		Name:            createName,
-		Email:           createEmail,
-		Phone:           createPhone,
-		Password:        createPassword,
-		Gender:          createGender,
-		AllowView:       createAllowView,
-		AllowCreate:     createAllowCreate,
-		AllowPermission: createAllowPermission,
-		AllowDelete:     createAllowDelete,
-		AllowBlock:      createAllowBlock,
-		Blocked:         createBlocked,
+		Name:        createName,
+		Email:       createEmail,
+		Phone:       createPhone,
+		Password:    createPassword,
+		Gender:      createGender,
+		PrivilegeID: "someID",
+		Blocked:     createBlocked,
 	})
 
 	// assert that we cannot get
@@ -342,26 +310,17 @@ func TestCreateIllegalEmail(t *testing.T) {
 	createName := ""
 	createEmail := "testusersoftcorp.io"
 	createPassword := "TestPassword1234asda"
-	createAllowView := true
-	createAllowCreate := true
-	createAllowPermission := true
-	createAllowDelete := true
-	createAllowBlock := true
 	createBlocked := false
 	createGender := false
 
 	// act
 	userResponse, err := myHandler.Create(ctx, &proto.User{
-		Name:            createName,
-		Email:           createEmail,
-		Password:        createPassword,
-		Gender:          createGender,
-		AllowView:       createAllowView,
-		AllowCreate:     createAllowCreate,
-		AllowPermission: createAllowPermission,
-		AllowDelete:     createAllowDelete,
-		AllowBlock:      createAllowBlock,
-		Blocked:         createBlocked,
+		Name:        createName,
+		Email:       createEmail,
+		Password:    createPassword,
+		Gender:      createGender,
+		PrivilegeID: "someID",
+		Blocked:     createBlocked,
 	})
 
 	// assert that we cannot get
@@ -412,26 +371,17 @@ func TestCreateIllegalPassword(t *testing.T) {
 	createName := ""
 	createEmail := "testusersoftcorp.io"
 	createPassword := "1234asda"
-	createAllowView := true
-	createAllowCreate := true
-	createAllowPermission := true
-	createAllowDelete := true
-	createAllowBlock := true
-	createBlocked := false
 	createGender := false
+	createBlocked := false
 
 	// act
 	userResponse, err := myHandler.Create(ctx, &proto.User{
-		Name:            createName,
-		Email:           createEmail,
-		Password:        createPassword,
-		Gender:          createGender,
-		AllowView:       createAllowView,
-		AllowCreate:     createAllowCreate,
-		AllowPermission: createAllowPermission,
-		AllowDelete:     createAllowDelete,
-		AllowBlock:      createAllowBlock,
-		Blocked:         createBlocked,
+		Name:        createName,
+		Email:       createEmail,
+		Password:    createPassword,
+		Gender:      createGender,
+		PrivilegeID: "someID",
+		Blocked:     createBlocked,
 	})
 
 	// assert that we cannot get
@@ -455,26 +405,17 @@ func TestCreateUserIllegalToken(t *testing.T) {
 	createName := "Test User"
 	createEmail := "testuser@softcorp.io"
 	createPassword := "TestPassword1234asda"
-	createAllowView := true
-	createAllowCreate := true
-	createAllowPermission := true
-	createAllowDelete := true
-	createAllowBlock := true
 	createBlocked := false
 	createGender := false
 
 	// act
 	userResponse, err := myHandler.Create(ctx, &proto.User{
-		Name:            createName,
-		Email:           createEmail,
-		Password:        createPassword,
-		Gender:          createGender,
-		AllowView:       createAllowView,
-		AllowCreate:     createAllowCreate,
-		AllowPermission: createAllowPermission,
-		AllowDelete:     createAllowDelete,
-		AllowBlock:      createAllowBlock,
-		Blocked:         createBlocked,
+		Name:        createName,
+		Email:       createEmail,
+		Password:    createPassword,
+		Gender:      createGender,
+		PrivilegeID: "someID",
+		Blocked:     createBlocked,
 	})
 
 	// assert that we cannot get

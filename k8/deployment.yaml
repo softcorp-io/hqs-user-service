@@ -15,7 +15,7 @@ spec:
         spec:
           containers:
             - name: hqs-user-service
-              image: gcr.io/softcorp-hqs/hqs-user-service:v0.0.51
+              image: gcr.io/softcorp-hqs/hqs-user-service:v0.0.52
               imagePullPolicy: Always
               volumeMounts: 
               - name: image-storage
@@ -46,11 +46,15 @@ spec:
               - name: "SPACES_ENDPOINT"
                 value: "ams3.digitaloceanspaces.com"
               - name: "EMAIL_SERVICE_IP"
-                value: "10.4.4.212"
+                value: "hqs-email-service.default.svc.cluster.local"
               - name: "EMAIL_SERVICE_PORT"
                 value: "9000"
               - name: "EMAIL_SIGNUP_LINK_BASE"
                 value: "https://hqs.softcorp.io/#/signup/"
+              - name: "PRIVILEGE_SERVICE_IP"
+                value: "hqs-privilege-service.default.svc.cluster.local"
+              - name: "PRIVILEGE_SERVICE_PORT"
+                value: "9000"
               envFrom:
               - secretRef:
                   name: hqs-user-service-secret

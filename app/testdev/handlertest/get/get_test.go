@@ -446,10 +446,6 @@ func TestByValidAuthToken(t *testing.T) {
 	assert.Equal(t, seedOneName, userResponse.User.Name)
 	assert.NotEmpty(t, userResponse.User.Image)
 	assert.NotEqual(t, seedOnePassword, userResponse.User.Password)
-	assert.Equal(t, seedOneAllowView, userResponse.User.AllowView)
-	assert.Equal(t, seedOneAllowCreate, userResponse.User.AllowCreate)
-	assert.Equal(t, seedOneAllowPermission, userResponse.User.AllowPermission)
-	assert.Equal(t, seedOneAllowDelete, userResponse.User.AllowDelete)
 }
 
 func TestGetNotAllowed(t *testing.T) {

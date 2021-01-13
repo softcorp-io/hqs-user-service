@@ -35,8 +35,8 @@ var (
 	mongoContainer = "dockermongo"
 )
 
-// SetupDockerPostgres - start a docker container running postgres for testing.
-func SetupDockerPostgres() error {
+// SetupDockerMongo - start a docker container running mongo for testing.
+func SetupDockerMongo() error {
 	zapLog, _ := zap.NewProduction()
 
 	pool, err := dockertest.NewPool("")

@@ -11,7 +11,7 @@ import (
 
 // GetService - returns a service, connected to a docker container.
 func GetService() (*service.TokenService, *mongo.Collection, *mongo.Collection, error) {
-	err := SetupDockerPostgres()
+	err := SetupDockerMongo()
 	if err != nil {
 		_ = TearDownMongoDocker()
 		return nil, nil, nil, err

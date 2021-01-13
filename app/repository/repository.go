@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"errors"
-	"log"
 	"strings"
 	"time"
 	"unicode"
@@ -19,28 +18,23 @@ import (
 
 // User - struct.
 type User struct {
-	ID                 string    `bson:"id" json:"id"`
-	Name               string    `bson:"name" json:"name"`
-	Email              string    `bson:"email" json:"email"`
-	Phone              string    `bson:"phone" json:"phone"`
-	CountryCode        string    `bson:"country_code" json:"country_code"`
-	DialCode           string    `bson:"dial_code" json:"dial_code"`
-	Gender             bool      `bson:"gender" json:"gender"`
-	Image              string    `bson:"image" json:"image"`
-	Description        string    `bson:"description" json:"description"`
-	Title              string    `bson:"title" json:"title"`
-	Birthday           time.Time `bson:"birthday" json:"birthday"`
-	Password           string    `bson:"password" json:"password"`
-	AllowView          bool      `bson:"allow_view" json:"allow_view"`
-	AllowCreate        bool      `bson:"allow_create" json:"allow_create"`
-	AllowPermission    bool      `bson:"allow_permission" json:"allow_permission"`
-	AllowDelete        bool      `bson:"allow_delete" json:"allow_delete"`
-	AllowBlock         bool      `bson:"allow_block" json:"allow_block"`
-	AllowResetPassword bool      `bson:"allow_reset_password" json:"allow_reset_password"`
-	Blocked            bool      `bson:"blocked" json:"blocked"`
-	Admin              bool      `bson:"admin" json:"admin"`
-	CreatedAt          time.Time `bson:"created_at" json:"created_at"`
-	UpdatedAt          time.Time `bson:"updated_at" json:"updated_at"`
+	ID          string    `bson:"id" json:"id"`
+	Name        string    `bson:"name" json:"name"`
+	Email       string    `bson:"email" json:"email"`
+	Phone       string    `bson:"phone" json:"phone"`
+	CountryCode string    `bson:"country_code" json:"country_code"`
+	DialCode    string    `bson:"dial_code" json:"dial_code"`
+	Gender      bool      `bson:"gender" json:"gender"`
+	Image       string    `bson:"image" json:"image"`
+	Description string    `bson:"description" json:"description"`
+	Title       string    `bson:"title" json:"title"`
+	Birthday    time.Time `bson:"birthday" json:"birthday"`
+	Password    string    `bson:"password" json:"password"`
+	PrivilegeID string    `bson:"privilege_id" json:"privilege_id"`
+	Blocked     bool      `bson:"blocked" json:"blocked"`
+	Admin       bool      `bson:"admin" json:"admin"`
+	CreatedAt   time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt   time.Time `bson:"updated_at" json:"updated_at"`
 }
 
 // Upload -struct.
@@ -58,7 +52,7 @@ type Repository interface {
 	GetRoot(ctx context.Context) error
 	GetByEmail(ctx context.Context, user *User) (*User, error)
 	UpdateProfile(ctx context.Context, user *User) error
-	UpdateAllowances(ctx context.Context, user *User) error
+	UpdatePrivileges(ctx context.Context, user *User) error
 	UpdateImage(ctx context.Context, user *User) error
 	UpdatePassword(ctx context.Context, user *User) error
 	UpdateBlockUser(ctx context.Context, user *User) error
@@ -94,28 +88,23 @@ func MarshalUser(user *userProto.User) *User {
 		birthday = time.Now()
 	}
 	return &User{
-		ID:                 user.Id,
-		Name:               user.Name,
-		Email:              user.Email,
-		Phone:              user.Phone,
-		CountryCode:        user.CountryCode,
-		DialCode:           user.DialCode,
-		Gender:             user.Gender,
-		Image:              user.Image,
-		Description:        user.Description,
-		Title:              user.Title,
-		Password:           user.Password,
-		AllowView:          user.AllowView,
-		AllowCreate:        user.AllowCreate,
-		AllowPermission:    user.AllowPermission,
-		AllowDelete:        user.AllowDelete,
-		AllowBlock:         user.AllowBlock,
-		AllowResetPassword: user.AllowResetPassword,
-		Blocked:            user.Blocked,
-		Admin:              user.Admin,
-		CreatedAt:          createdAt,
-		UpdatedAt:          updatedAt,
-		Birthday:           birthday,
+		ID:          user.Id,
+		Name:        user.Name,
+		Email:       user.Email,
+		Phone:       user.Phone,
+		CountryCode: user.CountryCode,
+		DialCode:    user.DialCode,
+		Gender:      user.Gender,
+		Image:       user.Image,
+		Description: user.Description,
+		Title:       user.Title,
+		Password:    user.Password,
+		PrivilegeID: user.PrivilegeID,
+		Blocked:     user.Blocked,
+		Admin:       user.Admin,
+		CreatedAt:   createdAt,
+		UpdatedAt:   updatedAt,
+		Birthday:    birthday,
 	}
 }
 
@@ -134,28 +123,23 @@ func UnmarshalUser(user *User) *userProto.User {
 	updatedAt, _ := ptypes.TimestampProto(user.UpdatedAt)
 	birthday := user.Birthday.String()
 	return &userProto.User{
-		Id:                 user.ID,
-		Name:               user.Name,
-		Email:              user.Email,
-		Phone:              user.Phone,
-		CountryCode:        user.CountryCode,
-		DialCode:           user.DialCode,
-		Gender:             user.Gender,
-		Image:              user.Image,
-		Description:        user.Description,
-		Title:              user.Title,
-		Password:           user.Password,
-		AllowView:          user.AllowView,
-		AllowCreate:        user.AllowCreate,
-		AllowPermission:    user.AllowPermission,
-		AllowDelete:        user.AllowDelete,
-		AllowBlock:         user.AllowBlock,
-		AllowResetPassword: user.AllowResetPassword,
-		Blocked:            user.Blocked,
-		Admin:              user.Admin,
-		CreatedAt:          createdAt,
-		UpdatedAt:          updatedAt,
-		Birthday:           birthday,
+		Id:          user.ID,
+		Name:        user.Name,
+		Email:       user.Email,
+		Phone:       user.Phone,
+		CountryCode: user.CountryCode,
+		DialCode:    user.DialCode,
+		Gender:      user.Gender,
+		Image:       user.Image,
+		Description: user.Description,
+		Title:       user.Title,
+		Password:    user.Password,
+		PrivilegeID: user.PrivilegeID,
+		Blocked:     user.Blocked,
+		Admin:       user.Admin,
+		CreatedAt:   createdAt,
+		UpdatedAt:   updatedAt,
+		Birthday:    birthday,
 	}
 }
 
@@ -183,32 +167,6 @@ func passwordValidator(s string) bool {
 	return hasMinLen && hasUpper && hasLower && hasNumber
 }
 
-// ValidateAllowances - validates the allowances of a user.
-func (u *User) ValidateAllowances() error {
-	// to delete, change permissions or create users, one has to be able to see them
-	createNoViewAccess := u.AllowCreate && (!u.AllowView || !u.AllowPermission)
-	deleteNoViewAccess := u.AllowDelete && !u.AllowView
-	permissionNoViewAccess := u.AllowPermission && !u.AllowView
-	blockNoViewAccess := u.AllowBlock && !u.AllowView
-	resetNoViewAccess := u.AllowResetPassword && !u.AllowView
-	if createNoViewAccess {
-		return errors.New("Create access bot allowed without view & permission access")
-	}
-	if deleteNoViewAccess {
-		return errors.New("Delete access not allowed without view access")
-	}
-	if permissionNoViewAccess {
-		return errors.New("Permission access not allowed without view access")
-	}
-	if blockNoViewAccess {
-		return errors.New("Block access not allowed without view access")
-	}
-	if resetNoViewAccess {
-		return errors.New("Reset access not allowed without view access")
-	}
-	return nil
-}
-
 // Validate - validates input.
 func (u *User) Validate(action string) error {
 	switch strings.ToLower(action) {
@@ -219,14 +177,14 @@ func (u *User) Validate(action string) error {
 		if u.ID == "" || len(u.ID) < 20 {
 			return errors.New("Invalid UUID")
 		}
+		if u.PrivilegeID == "" {
+			return errors.New("Invalid PrivilegeID")
+		}
 		if err := checkmail.ValidateFormat(u.Email); err != nil {
 			return errors.New("Invalid email")
 		}
 		if !passwordValidator(u.Password) {
 			return errors.New("Invalid password")
-		}
-		if err := u.ValidateAllowances(); err != nil {
-			return err
 		}
 	case "profile":
 		if u.Name == "" {
@@ -238,10 +196,6 @@ func (u *User) Validate(action string) error {
 	case "password":
 		if !passwordValidator(u.Password) {
 			return errors.New("Invalid password")
-		}
-	case "allowance":
-		if err := u.ValidateAllowances(); err != nil {
-			return err
 		}
 	}
 	return nil
@@ -265,6 +219,7 @@ func (u *User) prepare(action string) {
 		} else {
 			u.Image = "hqs/users/shared/profileImage/maleProfileImage.png"
 		}
+		break
 	case "update":
 		u.Name = strings.TrimSpace(u.Name)
 		u.Email = strings.TrimSpace(u.Email)
@@ -272,6 +227,7 @@ func (u *User) prepare(action string) {
 		u.Admin = false
 		u.CountryCode = strings.TrimSpace(u.CountryCode)
 		u.DialCode = strings.TrimSpace(u.DialCode)
+		break
 	case "root":
 		u.Name = strings.TrimSpace(u.Name)
 		u.Email = strings.TrimSpace(u.Email)
@@ -286,6 +242,7 @@ func (u *User) prepare(action string) {
 		} else {
 			u.Image = "hqs/users/shared/profileImage/maleProfileImage.png"
 		}
+		break
 	}
 }
 
@@ -390,23 +347,12 @@ func (r *MongoRepository) UpdateProfile(ctx context.Context, user *User) error {
 	return err
 }
 
-// UpdateAllowances - updates users allowances / rights to view, create and delete.
-func (r *MongoRepository) UpdateAllowances(ctx context.Context, user *User) error {
-	if err := user.Validate("allowance"); err != nil {
-		return err
-	}
-
-	user.prepare("update")
-
+// UpdatePrivileges - updates users privileges be setting id to corresponding privilege.
+func (r *MongoRepository) UpdatePrivileges(ctx context.Context, user *User) error {
 	updateUser := bson.M{
 		"$set": bson.M{
-			"allow_view":           user.AllowView,
-			"allow_create":         user.AllowCreate,
-			"allow_permission":     user.AllowPermission,
-			"allow_delete":         user.AllowDelete,
-			"allow_block":          user.AllowBlock,
-			"allow_reset_password": user.AllowResetPassword,
-			"updated_at":           time.Now(),
+			"privilege_id": user.PrivilegeID,
+			"updated_at":   time.Now(),
 		},
 	}
 
@@ -495,7 +441,7 @@ func (r *MongoRepository) UpdateBlockUser(ctx context.Context, user *User) error
 	return nil
 }
 
-// Get - finds single user using the users id.
+// Get - finds single user using the user's id.
 func (r *MongoRepository) Get(ctx context.Context, user *User) (*User, error) {
 	userReturn := User{}
 
@@ -511,7 +457,6 @@ func (r *MongoRepository) GetRoot(ctx context.Context) error {
 	userReturn := User{}
 
 	if err := r.mongo.FindOne(ctx, bson.M{"admin": true}).Decode(&userReturn); err != nil {
-		log.Println(err)
 		return err
 	}
 	return nil

@@ -68,13 +68,7 @@ func TestGenerateSignupToken(t *testing.T) {
 	ctx = metadata.NewIncomingContext(ctx, md)
 
 	// act
-	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{
-		AllowView:       true,
-		AllowCreate:     false,
-		AllowPermission: false,
-		AllowDelete:     false,
-		AllowBlock:      false,
-	})
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{})
 
 	// assert
 	assert.Equal(t, nil, err)
@@ -119,13 +113,7 @@ func TestGenerateSignupTokenUnauthorized(t *testing.T) {
 	ctx = metadata.NewIncomingContext(ctx, md)
 
 	// act
-	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{
-		AllowView:       true,
-		AllowCreate:     false,
-		AllowPermission: false,
-		AllowDelete:     false,
-		AllowBlock:      false,
-	})
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{})
 
 	// assert
 	assert.Error(t, err)
@@ -166,19 +154,7 @@ func TestSingupWithToken(t *testing.T) {
 	md := metadata.New(map[string]string{"token": tokenResponse.Token})
 	ctx = metadata.NewIncomingContext(ctx, md)
 
-	createAllowView := true
-	createAllowCreate := false
-	createAllowPermission := true
-	createAllowDelete := false
-	createAllowBlock := false
-
-	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{
-		AllowView:       createAllowView,
-		AllowCreate:     createAllowCreate,
-		AllowPermission: createAllowPermission,
-		AllowDelete:     createAllowDelete,
-		AllowBlock:      createAllowBlock,
-	})
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{})
 
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, singupToken)
@@ -209,11 +185,6 @@ func TestSingupWithToken(t *testing.T) {
 	assert.Equal(t, createUserEmail, userResponse.User.Email)
 	assert.Equal(t, createUserPhone, userResponse.User.Phone)
 	assert.NotEqual(t, createUserPassword, userResponse.User.Password)
-	assert.Equal(t, createAllowView, userResponse.User.AllowView)
-	assert.Equal(t, createAllowCreate, userResponse.User.AllowCreate)
-	assert.Equal(t, createAllowPermission, userResponse.User.AllowPermission)
-	assert.Equal(t, createAllowDelete, userResponse.User.AllowDelete)
-	assert.Equal(t, createAllowBlock, userResponse.User.AllowBlock)
 }
 
 func TestCannotUseSignupTokenTwice(t *testing.T) {
@@ -250,19 +221,7 @@ func TestCannotUseSignupTokenTwice(t *testing.T) {
 	md := metadata.New(map[string]string{"token": tokenResponse.Token})
 	ctx = metadata.NewIncomingContext(ctx, md)
 
-	createAllowView := true
-	createAllowCreate := false
-	createAllowPermission := true
-	createAllowDelete := false
-	createAllowBlock := false
-
-	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{
-		AllowView:       createAllowView,
-		AllowCreate:     createAllowCreate,
-		AllowPermission: createAllowPermission,
-		AllowDelete:     createAllowDelete,
-		AllowBlock:      createAllowBlock,
-	})
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{})
 
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, singupToken)

@@ -72,8 +72,13 @@ func (pc *privilegeClientMock) Update(ctx context.Context, req *privilegeProto.P
 
 func (pc *privilegeClientMock) Get(ctx context.Context, req *privilegeProto.Privilege, options ...grpc.CallOption) (*privilegeProto.Response, error) {
 	response := &privilegeProto.Response{}
-	response.Privilege = pc.privileges[req.Id]
 
+	if val, ok := pc.privileges[req.Id]; ok {
+		response.Privilege = val
+		return response, nil
+	}
+	pc.privileges[req.Id] = req
+	response.Privilege = req
 	return response, nil
 }
 

@@ -1,0 +1,539 @@
+go clean -testcache && go test ./testdev/handlertest/... -v
+=== RUN   TestAuth
+2021/01/13 20:42:46 we get here
+{"level":"info","ts":1610566966.5620081,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566966.6677551,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+--- PASS: TestAuth (0.24s)
+=== RUN   TestAuthUserBlocked
+2021/01/13 20:42:46 we get here
+{"level":"info","ts":1610566966.809293,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"error","ts":1610566966.8124511,"caller":"handler/handler.go:698","msg":"The user is blocked","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Auth\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:698\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/auth.TestAuthUserBlocked\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/auth/auth_test.go:88\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestAuthUserBlocked (0.12s)
+=== RUN   TestAuthWrongPassword
+{"level":"info","ts":1610566966.928541,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.0230699,"caller":"handler/handler.go:703","msg":"Could not compare hash with err  crypto/bcrypt: hashedPassword is not the hash of the given password","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Auth\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:703\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/auth.TestAuthWrongPassword\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/auth/auth_test.go:118\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestAuthWrongPassword (0.21s)
+=== RUN   TestAuthNoPassword
+{"level":"info","ts":1610566967.141027,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.229725,"caller":"handler/handler.go:703","msg":"Could not compare hash with err  crypto/bcrypt: hashedPassword is not the hash of the given password","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Auth\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:703\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/auth.TestAuthNoPassword\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/auth/auth_test.go:149\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestAuthNoPassword (0.21s)
+=== RUN   TestGetAuthHistoryValidToken
+{"level":"info","ts":1610566967.33949,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566967.4502358,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566967.481127,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566967.5681589,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566967.57175,"caller":"handler/handler.go:907","msg":"Recieved new request"}
+--- PASS: TestGetAuthHistoryValidToken (0.35s)
+=== RUN   TestGetAuthHistoryInvalidToken
+{"level":"info","ts":1610566967.707923,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566967.817826,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566967.8348951,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566967.923847,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566967.928857,"caller":"handler/handler.go:907","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.928912,"caller":"handler/handler.go:912","msg":"Could not validate token with err token contains an invalid number of segments","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GetAuthHistory\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:912\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/auth.TestGetAuthHistoryInvalidToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/auth/auth_test.go:254\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestGetAuthHistoryInvalidToken (0.35s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/auth	6.223s
+=== RUN   TestBlockToken
+{"level":"info","ts":1610566966.245208,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566966.3557918,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566966.381557,"caller":"handler/handler.go:931","msg":"Recieved new request"}
+{"level":"info","ts":1610566966.386548,"caller":"handler/handler.go:727","msg":"Recieved new request"}
+{"level":"info","ts":1610566966.4047658,"caller":"handler/handler.go:931","msg":"Recieved new request"}
+{"level":"error","ts":1610566966.407499,"caller":"handler/handler.go:935","msg":"Could not decode token with err  token is blocked and cannot be used","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).ValidateToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:935\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/block_token.TestBlockToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/block_token/block_token_test.go:85\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestBlockToken (0.29s)
+=== RUN   TestCannotBlockOtherUsers
+{"level":"info","ts":1610566966.6358368,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566966.7447932,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566966.774411,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566966.856962,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566966.86013,"caller":"handler/handler.go:727","msg":"Recieved new request"}
+{"level":"error","ts":1610566966.869812,"caller":"handler/handler.go:743","msg":"Token user does not match auth user","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).BlockToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:743\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/block_token.TestCannotBlockOtherUsers\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/block_token/block_token_test.go:144\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566966.8698869,"caller":"handler/handler.go:931","msg":"Recieved new request"}
+--- PASS: TestCannotBlockOtherUsers (0.47s)
+=== RUN   TestBlockByID
+{"level":"info","ts":1610566967.068649,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566967.169433,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566967.205798,"caller":"handler/handler.go:907","msg":"Recieved new request"}
+{"level":"info","ts":1610566967.212964,"caller":"handler/handler.go:842","msg":"Recieved new request"}
+{"level":"info","ts":1610566967.225572,"caller":"handler/handler.go:931","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.228682,"caller":"handler/handler.go:935","msg":"Could not decode token with err  token is blocked and cannot be used","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).ValidateToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:935\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/block_token.TestBlockByID\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/block_token/block_token_test.go:205\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestBlockByID (0.35s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/block_token	5.537s
+=== RUN   TestCreateAllowed
+{"level":"info","ts":1610566965.314326,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566965.41759,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566965.4517949,"caller":"handler/handler.go:68","msg":"Recieved new request"}
+{"level":"info","ts":1610566965.5637581,"caller":"handler/handler.go:272","msg":"Recieved new request"}
+--- PASS: TestCreateAllowed (0.38s)
+=== RUN   TestCreateDuplicateEmail
+{"level":"info","ts":1610566965.78293,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566965.93913,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566965.987345,"caller":"handler/handler.go:68","msg":"Recieved new request"}
+{"level":"error","ts":1610566966.0809019,"caller":"handler/handler.go:95","msg":"Could not create with err A user with that email already exists","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Create\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:95\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateDuplicateEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:138\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestCreateDuplicateEmail (0.51s)
+=== RUN   TestCreateNotAllowed
+{"level":"info","ts":1610566966.2328908,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566966.3572679,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566966.3873448,"caller":"handler/handler.go:68","msg":"Recieved new request"}
+{"level":"error","ts":1610566966.3934278,"caller":"handler/handler.go:1060","msg":"User do not have create privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).validateTokenHelper\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:1060\ngithub.com/softcorp-io/hqs-user-service/handler.(*Handler).Create\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:71\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:193\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"error","ts":1610566966.3935559,"caller":"handler/handler.go:75","msg":"Could not validate token with err User do not have create privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Create\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:75\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:193\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566966.39358,"caller":"handler/handler.go:272","msg":"Recieved new request"}
+{"level":"error","ts":1610566966.3988779,"caller":"handler/handler.go:1060","msg":"User do not have create privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).validateTokenHelper\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:1060\ngithub.com/softcorp-io/hqs-user-service/handler.(*Handler).GetByEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:275\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:203\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"error","ts":1610566966.398947,"caller":"handler/handler.go:279","msg":"Could not validate token with err User do not have create privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GetByEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:279\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:203\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestCreateNotAllowed (0.32s)
+=== RUN   TestCreateIllegalName
+{"level":"info","ts":1610566966.53323,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566966.633339,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566966.657841,"caller":"handler/handler.go:68","msg":"Recieved new request"}
+{"level":"error","ts":1610566966.7396789,"caller":"handler/handler.go:95","msg":"Could not create with err Required nickname","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Create\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:95\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateIllegalName\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:254\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566966.7397408,"caller":"handler/handler.go:272","msg":"Recieved new request"}
+{"level":"error","ts":1610566966.746434,"caller":"handler/handler.go:285","msg":"Could not get user with err mongo: no documents in result","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GetByEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:285\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateIllegalName\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:267\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestCreateIllegalName (0.35s)
+=== RUN   TestCreateIllegalEmail
+{"level":"info","ts":1610566966.869838,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566967.0602062,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566967.0842419,"caller":"handler/handler.go:68","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.174217,"caller":"handler/handler.go:95","msg":"Could not create with err Required nickname","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Create\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:95\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateIllegalEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:317\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566967.174277,"caller":"handler/handler.go:272","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.1811142,"caller":"handler/handler.go:285","msg":"Could not get user with err mongo: no documents in result","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GetByEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:285\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateIllegalEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:328\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestCreateIllegalEmail (0.43s)
+=== RUN   TestCreateIllegalPassword
+{"level":"info","ts":1610566967.30397,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566967.423767,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566967.457351,"caller":"handler/handler.go:68","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.465099,"caller":"handler/handler.go:83","msg":"Could not validate user with err Invalid password","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Create\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:83\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateIllegalPassword\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:378\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566967.465177,"caller":"handler/handler.go:272","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.4749289,"caller":"handler/handler.go:285","msg":"Could not get user with err mongo: no documents in result","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GetByEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:285\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateIllegalPassword\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:389\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestCreateIllegalPassword (0.29s)
+=== RUN   TestCreateUserIllegalToken
+{"level":"info","ts":1610566967.475143,"caller":"handler/handler.go:68","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.47521,"caller":"handler/handler.go:75","msg":"Could not validate token with err token contains an invalid number of segments","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Create\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:75\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateUserIllegalToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:412\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566967.475256,"caller":"handler/handler.go:272","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.475277,"caller":"handler/handler.go:279","msg":"Could not validate token with err token contains an invalid number of segments","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GetByEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:279\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/create.TestCreateUserIllegalToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/create/create_test.go:423\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestCreateUserIllegalToken (0.00s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/create	5.880s
+=== RUN   TestDeleteAllowed
+{"level":"info","ts":1610566964.552907,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566964.672844,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566964.697696,"caller":"handler/handler.go:623","msg":"Recieved new request"}
+{"level":"info","ts":1610566964.714402,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+{"level":"error","ts":1610566964.721099,"caller":"handler/handler.go:213","msg":"Could not get user with err mongo: no documents in result","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Get\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:213\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/delete.TestDeleteAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/delete/delete_test.go:92\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestDeleteAllowed (0.46s)
+=== RUN   TestDeleteNotAllowed
+{"level":"info","ts":1610566964.93327,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566965.0552819,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566965.080568,"caller":"handler/handler.go:623","msg":"Recieved new request"}
+{"level":"error","ts":1610566965.086655,"caller":"handler/handler.go:1068","msg":"User do not have delete privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).validateTokenHelper\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:1068\ngithub.com/softcorp-io/hqs-user-service/handler.(*Handler).Delete\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:626\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/delete.TestDeleteNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/delete/delete_test.go:150\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"error","ts":1610566965.086715,"caller":"handler/handler.go:630","msg":"Could not validate token with err User do not have delete privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Delete\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:630\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/delete.TestDeleteNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/delete/delete_test.go:150\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566965.0867531,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+--- PASS: TestDeleteNotAllowed (0.37s)
+=== RUN   TestDeleteIllegalToken
+{"level":"info","ts":1610566965.2978911,"caller":"handler/handler.go:623","msg":"Recieved new request"}
+{"level":"error","ts":1610566965.297936,"caller":"handler/handler.go:630","msg":"Could not validate token with err token contains an invalid number of segments","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Delete\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:630\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/delete.TestDeleteIllegalToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/delete/delete_test.go:207\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566965.297961,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566965.401845,"caller":"crypto/crypto.go:410","msg":"No latitude or longitude present"}
+{"level":"warn","ts":1610566965.401886,"caller":"crypto/crypto.go:431","msg":"No device information present"}
+{"level":"info","ts":1610566965.4205592,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+--- PASS: TestDeleteIllegalToken (0.33s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/delete	3.860s
+=== RUN   TestGet
+{"level":"info","ts":1610566967.275053,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566967.400618,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566967.443464,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+--- PASS: TestGet (0.52s)
+=== RUN   TestGetIllegalToken
+{"level":"info","ts":1610566967.695766,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.6958342,"caller":"handler/handler.go:207","msg":"Could not validate token with err token contains an invalid number of segments","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Get\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:207\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/get.TestGetIllegalToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/get/get_test.go:140\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestGetIllegalToken (0.24s)
+=== RUN   TestGetAll
+{"level":"info","ts":1610566967.9793239,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566968.080215,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566968.0954392,"caller":"handler/handler.go:310","msg":"Recieved new request"}
+--- PASS: TestGetAll (0.41s)
+=== RUN   TestGetAllIllegalToken
+{"level":"info","ts":1610566968.3563242,"caller":"handler/handler.go:310","msg":"Recieved new request"}
+{"level":"error","ts":1610566968.3563678,"caller":"handler/handler.go:317","msg":"Could not validate token with err token contains an invalid number of segments","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GetAll\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:317\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/get.TestGetAllIllegalToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/get/get_test.go:284\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestGetAllIllegalToken (0.25s)
+=== RUN   TestGetByEmail
+{"level":"info","ts":1610566968.54213,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566968.652305,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566968.6739461,"caller":"handler/handler.go:272","msg":"Recieved new request"}
+--- PASS: TestGetByEmail (0.33s)
+=== RUN   TestGetByEmailIllegalToken
+{"level":"info","ts":1610566968.87412,"caller":"handler/handler.go:272","msg":"Recieved new request"}
+{"level":"error","ts":1610566968.874163,"caller":"handler/handler.go:279","msg":"Could not validate token with err token contains an invalid number of segments","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GetByEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:279\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/get.TestGetByEmailIllegalToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/get/get_test.go:395\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestGetByEmailIllegalToken (0.19s)
+=== RUN   TestByValidAuthToken
+{"level":"info","ts":1610566969.010169,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566969.126293,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566969.1514082,"caller":"handler/handler.go:243","msg":"Recieved new request"}
+--- PASS: TestByValidAuthToken (0.28s)
+=== RUN   TestGetNotAllowed
+{"level":"info","ts":1610566969.332205,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566969.426332,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566969.4398239,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+{"level":"error","ts":1610566969.4439418,"caller":"handler/handler.go:1056","msg":"User do not have view privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).validateTokenHelper\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:1056\ngithub.com/softcorp-io/hqs-user-service/handler.(*Handler).Get\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:203\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/get.TestGetNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/get/get_test.go:501\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"error","ts":1610566969.4440398,"caller":"handler/handler.go:207","msg":"Could not validate token with err User do not have view privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Get\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:207\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/get.TestGetNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/get/get_test.go:501\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestGetNotAllowed (0.29s)
+=== RUN   TestGetByEmailNotAllowed
+{"level":"info","ts":1610566969.611456,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566969.7006269,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566969.715741,"caller":"handler/handler.go:272","msg":"Recieved new request"}
+{"level":"error","ts":1610566969.719247,"caller":"handler/handler.go:1060","msg":"User do not have create privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).validateTokenHelper\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:1060\ngithub.com/softcorp-io/hqs-user-service/handler.(*Handler).GetByEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:275\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/get.TestGetByEmailNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/get/get_test.go:560\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"error","ts":1610566969.7193432,"caller":"handler/handler.go:279","msg":"Could not validate token with err User do not have create privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GetByEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:279\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/get.TestGetByEmailNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/get/get_test.go:560\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestGetByEmailNotAllowed (0.28s)
+=== RUN   TestGetAllNotAllowed
+{"level":"info","ts":1610566969.886925,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566969.978285,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566969.9951859,"caller":"handler/handler.go:310","msg":"Recieved new request"}
+{"level":"error","ts":1610566969.999808,"caller":"handler/handler.go:1060","msg":"User do not have create privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).validateTokenHelper\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:1060\ngithub.com/softcorp-io/hqs-user-service/handler.(*Handler).GetAll\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:313\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/get.TestGetAllNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/get/get_test.go:619\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"error","ts":1610566969.999862,"caller":"handler/handler.go:317","msg":"Could not validate token with err User do not have create privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GetAll\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:317\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/get.TestGetAllNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/get/get_test.go:619\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestGetAllNotAllowed (0.28s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/get	8.118s
+=== RUN   TestGenerateSignupToken
+{"level":"info","ts":1610566964.4957,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566964.6321301,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566964.6557062,"caller":"handler/handler.go:111","msg":"Recieved new request"}
+--- PASS: TestGenerateSignupToken (0.37s)
+=== RUN   TestGenerateSignupTokenUnauthorized
+{"level":"info","ts":1610566964.7933571,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566964.9023411,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566964.938456,"caller":"handler/handler.go:111","msg":"Recieved new request"}
+{"level":"error","ts":1610566964.943905,"caller":"handler/handler.go:1060","msg":"User do not have create privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).validateTokenHelper\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:1060\ngithub.com/softcorp-io/hqs-user-service/handler.(*Handler).GenerateSignupToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:114\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/signup_token.TestGenerateSignupTokenUnauthorized\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/signup_token/signup_token_test.go:116\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"error","ts":1610566964.9440079,"caller":"handler/handler.go:118","msg":"Could not validate token with err User do not have create privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).GenerateSignupToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:118\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/signup_token.TestGenerateSignupTokenUnauthorized\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/signup_token/signup_token_test.go:116\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestGenerateSignupTokenUnauthorized (0.28s)
+=== RUN   TestSingupWithToken
+{"level":"info","ts":1610566965.0810308,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566965.195471,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566965.2195861,"caller":"handler/handler.go:111","msg":"Recieved new request"}
+{"level":"info","ts":1610566965.239172,"caller":"handler/handler.go:150","msg":"Recieved new request"}
+--- PASS: TestSingupWithToken (0.39s)
+=== RUN   TestCannotUseSignupTokenTwice
+{"level":"info","ts":1610566965.449478,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566965.576755,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566965.602516,"caller":"handler/handler.go:111","msg":"Recieved new request"}
+{"level":"info","ts":1610566965.6265972,"caller":"handler/handler.go:150","msg":"Recieved new request"}
+{"level":"info","ts":1610566965.718186,"caller":"handler/handler.go:150","msg":"Recieved new request"}
+{"level":"error","ts":1610566965.7325,"caller":"handler/handler.go:161","msg":"Token already used to signup with","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).Signup\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:161\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/signup_token.TestCannotUseSignupTokenTwice\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/signup_token/signup_token_test.go:251\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestCannotUseSignupTokenTwice (0.40s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/signup_token	4.209s
+=== RUN   TestUpdateBlockedAllowed
+{"level":"info","ts":1610566965.948224,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566966.066775,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566966.10461,"caller":"handler/handler.go:491","msg":"Recieved new request"}
+{"level":"info","ts":1610566966.125252,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+--- PASS: TestUpdateBlockedAllowed (0.48s)
+=== RUN   TestUpdateBlockedNotAllowed
+{"level":"info","ts":1610566966.329942,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566966.448051,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566966.478092,"caller":"handler/handler.go:491","msg":"Recieved new request"}
+{"level":"error","ts":1610566966.4829729,"caller":"handler/handler.go:1072","msg":"User do not have block privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).validateTokenHelper\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:1072\ngithub.com/softcorp-io/hqs-user-service/handler.(*Handler).UpdateBlockUser\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:494\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/update/blocked.TestUpdateBlockedNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/update/blocked/update_blocked_test.go:158\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"error","ts":1610566966.483041,"caller":"handler/handler.go:498","msg":"Could not validate token with err User do not have block privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).UpdateBlockUser\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:498\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/update/blocked.TestUpdateBlockedNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/update/blocked/update_blocked_test.go:158\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566966.483073,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+--- PASS: TestUpdateBlockedNotAllowed (0.37s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/update/blocked	4.821s
+=== RUN   TestUpdatePassword
+{"level":"info","ts":1610566966.815427,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566966.948333,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566967.058065,"caller":"handler/handler.go:438","msg":"Recieved new request"}
+--- PASS: TestUpdatePassword (0.52s)
+=== RUN   TestUpdatePasswordIllegalPassowrd
+{"level":"info","ts":1610566967.331108,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566967.436713,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566967.4617898,"caller":"handler/handler.go:438","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.569097,"caller":"handler/handler.go:459","msg":"Could not validate user password with err Invalid password","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).UpdatePassword\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:459\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/update/password.TestUpdatePasswordIllegalPassowrd\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/update/password/update_password_test.go:120\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestUpdatePasswordIllegalPassowrd (0.35s)
+=== RUN   TestUpdateIllegalToken
+{"level":"info","ts":1610566967.7030022,"caller":"handler/handler.go:438","msg":"Recieved new request"}
+{"level":"error","ts":1610566967.703052,"caller":"handler/handler.go:443","msg":"Could not validate token with err token contains an invalid number of segments","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).UpdatePassword\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:443\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/update/password.TestUpdateIllegalToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/update/password/update_password_test.go:160\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestUpdateIllegalToken (0.13s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/update/password	5.891s
+=== RUN   TestUpdatePrivilegesAllowed
+{"level":"info","ts":1610566969.732542,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566969.81886,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566969.833311,"caller":"handler/handler.go:382","msg":"Recieved new request"}
+{"level":"info","ts":1610566969.840384,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+--- PASS: TestUpdatePrivilegesAllowed (0.28s)
+=== RUN   TestUpdateAllowanceNotAllowed
+{"level":"info","ts":1610566970.015753,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566970.111318,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566970.126517,"caller":"handler/handler.go:382","msg":"Recieved new request"}
+{"level":"error","ts":1610566970.1315358,"caller":"handler/handler.go:1064","msg":"User do not have manage privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).validateTokenHelper\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:1064\ngithub.com/softcorp-io/hqs-user-service/handler.(*Handler).UpdatePrivileges\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:385\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/update/privileges.TestUpdateAllowanceNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/update/privileges/update_privileges_test.go:152\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"error","ts":1610566970.1316102,"caller":"handler/handler.go:390","msg":"Could not validate token with err User do not have manage privileges","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).UpdatePrivileges\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:390\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/update/privileges.TestUpdateAllowanceNotAllowed\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/update/privileges/update_privileges_test.go:152\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566970.131637,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+--- PASS: TestUpdateAllowanceNotAllowed (0.29s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/update/privileges	2.845s
+=== RUN   TestUpdateProfile
+{"level":"info","ts":1610566970.142519,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566970.2281961,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566970.245676,"caller":"handler/handler.go:353","msg":"Recieved new request"}
+{"level":"info","ts":1610566970.2535958,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+--- PASS: TestUpdateProfile (0.23s)
+=== RUN   TestUpdateProfileWrongEmail
+{"level":"info","ts":1610566970.348722,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566970.4291599,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566970.4391282,"caller":"handler/handler.go:353","msg":"Recieved new request"}
+{"level":"error","ts":1610566970.4418392,"caller":"handler/handler.go:368","msg":"Could not update profile with err  Invalid email","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).UpdateProfile\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:368\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/update/profile.TestUpdateProfileWrongEmail\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/update/profile/update_profile_test.go:139\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566970.441917,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+--- PASS: TestUpdateProfileWrongEmail (0.19s)
+=== RUN   TestUpdateProfileWrongName
+{"level":"info","ts":1610566970.534397,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566970.6211991,"caller":"crypto/crypto.go:422","msg":"Could not get context"}
+{"level":"info","ts":1610566970.6330082,"caller":"handler/handler.go:353","msg":"Recieved new request"}
+{"level":"error","ts":1610566970.635777,"caller":"handler/handler.go:368","msg":"Could not update profile with err  Required nickname","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).UpdateProfile\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:368\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/update/profile.TestUpdateProfileWrongName\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/update/profile/update_profile_test.go:201\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+{"level":"info","ts":1610566970.635828,"caller":"handler/handler.go:200","msg":"Recieved new request"}
+--- PASS: TestUpdateProfileWrongName (0.19s)
+=== RUN   TestUpdateProfileIllegalToken
+{"level":"info","ts":1610566970.7370932,"caller":"handler/handler.go:353","msg":"Recieved new request"}
+{"level":"error","ts":1610566970.737164,"caller":"handler/handler.go:358","msg":"Could not validate token with err token contains an invalid number of segments","stacktrace":"github.com/softcorp-io/hqs-user-service/handler.(*Handler).UpdateProfile\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/handler/handler.go:358\ngithub.com/softcorp-io/hqs-user-service/testdev/handlertest/update/profile.TestUpdateProfileIllegalToken\n\t/Users/oscarorellana/softcorp/Projects/hqs/hqs-user-service/app/testdev/handlertest/update/profile/update_profile_test.go:252\ntesting.tRunner\n\t/usr/local/go/src/testing/testing.go:1127"}
+--- PASS: TestUpdateProfileIllegalToken (0.10s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/update/profile	2.842s
+2021/01/13 20:42:48 Service running on port: 9091
+=== RUN   TestUploadImage
+{"level":"info","ts":1610566970.4951448,"caller":"handler/handler.go:688","msg":"Recieved new request"}
+{"level":"warn","ts":1610566970.576153,"caller":"crypto/crypto.go:410","msg":"No latitude or longitude present"}
+{"level":"warn","ts":1610566970.576183,"caller":"crypto/crypto.go:431","msg":"No device information present"}
+{"level":"info","ts":1610566970.5880692,"caller":"handler/handler.go:528","msg":"Recieved new request"}
+{"level":"info","ts":1610566970.592211,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5922601,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 1024"}
+{"level":"info","ts":1610566970.592268,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5922759,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 2048"}
+{"level":"info","ts":1610566970.592287,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592296,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 3072"}
+{"level":"info","ts":1610566970.5923042,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.59231,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 4096"}
+{"level":"info","ts":1610566970.592318,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5923252,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 5120"}
+{"level":"info","ts":1610566970.592334,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592342,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 6144"}
+{"level":"info","ts":1610566970.5923488,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592362,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 7168"}
+{"level":"info","ts":1610566970.5923672,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592373,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 8192"}
+{"level":"info","ts":1610566970.592385,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592393,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 9216"}
+{"level":"info","ts":1610566970.592407,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.59242,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 10240"}
+{"level":"info","ts":1610566970.592428,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592436,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 11264"}
+{"level":"info","ts":1610566970.592441,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5924459,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 12288"}
+{"level":"info","ts":1610566970.5924501,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.59246,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 13312"}
+{"level":"info","ts":1610566970.592469,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592478,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 14336"}
+{"level":"info","ts":1610566970.592486,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592503,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 15360"}
+{"level":"info","ts":1610566970.592511,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5925179,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 16384"}
+{"level":"info","ts":1610566970.592543,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592553,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 17408"}
+{"level":"info","ts":1610566970.592566,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5925791,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 18432"}
+{"level":"info","ts":1610566970.592584,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592593,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 19456"}
+{"level":"info","ts":1610566970.5926,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5926101,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 20480"}
+{"level":"info","ts":1610566970.592618,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592633,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 21504"}
+{"level":"info","ts":1610566970.5926452,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5926569,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 22528"}
+{"level":"info","ts":1610566970.592664,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592679,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 23552"}
+{"level":"info","ts":1610566970.5926871,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5926988,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 24576"}
+{"level":"info","ts":1610566970.592706,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5927129,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 25600"}
+{"level":"info","ts":1610566970.592722,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.59273,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 26624"}
+{"level":"info","ts":1610566970.5927339,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592742,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 27648"}
+{"level":"info","ts":1610566970.592747,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592758,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 28672"}
+{"level":"info","ts":1610566970.592764,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.59277,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 29696"}
+{"level":"info","ts":1610566970.5927758,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5927858,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 30720"}
+{"level":"info","ts":1610566970.5927901,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5928051,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 31744"}
+{"level":"info","ts":1610566970.592811,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5928168,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 32768"}
+{"level":"info","ts":1610566970.592847,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5928562,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 33792"}
+{"level":"info","ts":1610566970.592863,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.59287,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 34816"}
+{"level":"info","ts":1610566970.592875,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592887,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 35840"}
+{"level":"info","ts":1610566970.592893,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592902,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 36864"}
+{"level":"info","ts":1610566970.59291,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592916,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 37888"}
+{"level":"info","ts":1610566970.592936,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592948,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 38912"}
+{"level":"info","ts":1610566970.5929558,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.59297,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 39936"}
+{"level":"info","ts":1610566970.592979,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.592986,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 40960"}
+{"level":"info","ts":1610566970.592993,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593002,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 41984"}
+{"level":"info","ts":1610566970.593011,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593042,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 43008"}
+{"level":"info","ts":1610566970.593054,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593083,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 44032"}
+{"level":"info","ts":1610566970.593097,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593109,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 45056"}
+{"level":"info","ts":1610566970.5931158,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5931442,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 46080"}
+{"level":"info","ts":1610566970.593157,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593166,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 47104"}
+{"level":"info","ts":1610566970.593172,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593198,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 48128"}
+{"level":"info","ts":1610566970.5932071,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593215,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 49152"}
+{"level":"info","ts":1610566970.5932229,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593241,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 50176"}
+{"level":"info","ts":1610566970.5932522,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593259,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 51200"}
+{"level":"info","ts":1610566970.5932648,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5932748,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 52224"}
+{"level":"info","ts":1610566970.5932832,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5932941,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 53248"}
+{"level":"info","ts":1610566970.593303,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593314,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 54272"}
+{"level":"info","ts":1610566970.593322,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.59333,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 55296"}
+{"level":"info","ts":1610566970.593336,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5933492,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 56320"}
+{"level":"info","ts":1610566970.593355,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593364,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 57344"}
+{"level":"info","ts":1610566970.5933719,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593388,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 58368"}
+{"level":"info","ts":1610566970.593396,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5934038,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 59392"}
+{"level":"info","ts":1610566970.593411,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593421,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 60416"}
+{"level":"info","ts":1610566970.593427,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5934348,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 61440"}
+{"level":"info","ts":1610566970.593441,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5934489,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 62464"}
+{"level":"info","ts":1610566970.593456,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593462,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 63488"}
+{"level":"info","ts":1610566970.593469,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593488,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 64512"}
+{"level":"info","ts":1610566970.593504,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593527,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 65536"}
+{"level":"info","ts":1610566970.5936,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5936131,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 66560"}
+{"level":"info","ts":1610566970.593624,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5936441,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 67584"}
+{"level":"info","ts":1610566970.5936599,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593684,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 68608"}
+{"level":"info","ts":1610566970.593694,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593704,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 69632"}
+{"level":"info","ts":1610566970.5937128,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5937228,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 70656"}
+{"level":"info","ts":1610566970.5937312,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5937438,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 71680"}
+{"level":"info","ts":1610566970.593751,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5937622,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 72704"}
+{"level":"info","ts":1610566970.593767,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5937731,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 73728"}
+{"level":"info","ts":1610566970.593778,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5937998,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 74752"}
+{"level":"info","ts":1610566970.593813,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5938199,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 75776"}
+{"level":"info","ts":1610566970.593826,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5938401,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 76800"}
+{"level":"info","ts":1610566970.593846,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5938518,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 77824"}
+{"level":"info","ts":1610566970.593863,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593874,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 78848"}
+{"level":"info","ts":1610566970.5938811,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593888,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 79872"}
+{"level":"info","ts":1610566970.593899,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593917,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 80896"}
+{"level":"info","ts":1610566970.5939221,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5939279,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 81920"}
+{"level":"info","ts":1610566970.593933,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.59394,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 82944"}
+{"level":"info","ts":1610566970.59395,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593962,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 83968"}
+{"level":"info","ts":1610566970.5939682,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593975,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 84992"}
+{"level":"info","ts":1610566970.593981,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.593996,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 86016"}
+{"level":"info","ts":1610566970.594005,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594016,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 87040"}
+{"level":"info","ts":1610566970.594023,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594029,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 88064"}
+{"level":"info","ts":1610566970.594034,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5940611,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 89088"}
+{"level":"info","ts":1610566970.5940669,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594074,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 90112"}
+{"level":"info","ts":1610566970.59408,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5940979,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 91136"}
+{"level":"info","ts":1610566970.59411,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5941162,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 92160"}
+{"level":"info","ts":1610566970.594122,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594136,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 93184"}
+{"level":"info","ts":1610566970.594143,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594149,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 94208"}
+{"level":"info","ts":1610566970.594154,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.5941591,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 95232"}
+{"level":"info","ts":1610566970.594167,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594174,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 96256"}
+{"level":"info","ts":1610566970.5941792,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594194,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 97280"}
+{"level":"info","ts":1610566970.5942001,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594217,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 98304"}
+{"level":"info","ts":1610566970.594222,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.59423,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 99328"}
+{"level":"info","ts":1610566970.594236,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594256,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 100352"}
+{"level":"info","ts":1610566970.594264,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594272,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 101376"}
+{"level":"info","ts":1610566970.5942779,"caller":"handler/handler.go:564","msg":"Waiting to receive more data..."}
+{"level":"info","ts":1610566970.594285,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 102400"}
+{"level":"info","ts":1610566970.594292,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 103424"}
+{"level":"info","ts":1610566970.594301,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 104448"}
+{"level":"info","ts":1610566970.594314,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 105472"}
+{"level":"info","ts":1610566970.594322,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 106496"}
+{"level":"info","ts":1610566970.594334,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 107520"}
+{"level":"info","ts":1610566970.594346,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 108544"}
+{"level":"info","ts":1610566970.5943549,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 109568"}
+{"level":"info","ts":1610566970.594362,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 110592"}
+{"level":"info","ts":1610566970.594369,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 111616"}
+{"level":"info","ts":1610566970.594377,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 112640"}
+{"level":"info","ts":1610566970.5943942,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 113664"}
+{"level":"info","ts":1610566970.5944152,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 114688"}
+{"level":"info","ts":1610566970.5944252,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 115712"}
+{"level":"info","ts":1610566970.594433,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 116736"}
+{"level":"info","ts":1610566970.594442,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 117760"}
+{"level":"info","ts":1610566970.594451,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 118784"}
+{"level":"info","ts":1610566970.5944571,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 119808"}
+{"level":"info","ts":1610566970.5944672,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 120832"}
+{"level":"info","ts":1610566970.594487,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 121856"}
+{"level":"info","ts":1610566970.5945091,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 122880"}
+{"level":"info","ts":1610566970.594541,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 123904"}
+{"level":"info","ts":1610566970.5945542,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 124928"}
+{"level":"info","ts":1610566970.594562,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 125952"}
+{"level":"info","ts":1610566970.59458,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 126976"}
+{"level":"info","ts":1610566970.5945878,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 128000"}
+{"level":"info","ts":1610566970.594605,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 129024"}
+{"level":"info","ts":1610566970.594621,"caller":"handler/handler.go:583","msg":"received new chunk with size: 1024 total size: 130048"}
+{"level":"info","ts":1610566970.594635,"caller":"handler/handler.go:583","msg":"received new chunk with size: 753 total size: 130801"}
+{"level":"info","ts":1610566970.594751,"caller":"handler/handler.go:567","msg":"EOR no more data data..."}
+{"level":"info","ts":1610566970.596342,"caller":"handler/handler.go:616","msg":"Image successfully uploaded!"}
+--- PASS: TestUploadImage (0.19s)
+PASS
+ok  	github.com/softcorp-io/hqs-user-service/testdev/handlertest/upload_image	2.333s

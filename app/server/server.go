@@ -201,6 +201,9 @@ func createRoot(zapLog *zap.Logger, repo *repository.MongoRepository, privilegeC
 		return err
 	}
 
+	zapLog.Info("ROOT ISE HERE")
+	zapLog.Info(fmt.Sprintf("%v", rootPrivilege))
+
 	rootEmail := "root@softcorp.io"
 	rootUser := &repository.User{
 		Name:        "Root User",

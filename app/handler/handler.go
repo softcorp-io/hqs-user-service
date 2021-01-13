@@ -406,6 +406,18 @@ func (s *Handler) UpdatePrivileges(ctx context.Context, req *userProto.User) (*u
 		return &userProto.Response{}, errors.New("Root user is not updateable")
 	}
 
+	// check that the requested prvilege actully exusts
+	privilege, err := s.privilegeClient.Get(ctx, &privilegeProto.Privilege{
+		Id: req.PrivilegeID,
+	})
+	if err != nil {
+		s.zapLog.Error(fmt.Sprintf("Could not find the specified privilege with err  %v", err))
+		return &userProto.Response{}, err
+	}
+
+	// update user with privilege id
+	resultUser.PrivilegeID = privilege.Privilege.Id
+
 	if err := s.repository.UpdatePrivileges(ctx, resultUser); err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not update with err  %v", err))
 		return &userProto.Response{}, err

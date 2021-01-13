@@ -9,7 +9,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
 
-	service "github.com/softcorp-io/hqs-user-service/crypto"
+	crypto "github.com/softcorp-io/hqs-user-service/crypto"
 	handler "github.com/softcorp-io/hqs-user-service/handler"
 	repository "github.com/softcorp-io/hqs-user-service/repository"
 	emailProto "github.com/softcorp-io/hqs_proto/go_hqs/hqs_email_service"
@@ -147,7 +147,7 @@ func NewHandler() (*handler.Handler, error) {
 	zapLog, _ := zap.NewProduction()
 
 	repo := repository.NewRepository(mongoUserCollection)
-	tokenService, err := service.NewTokenService(mongoAuthCollection, mongoTokenCollection, zapLog)
+	tokenService, err := crypto.NewTokenService(mongoAuthCollection, mongoTokenCollection, zapLog)
 	if err != nil {
 		return nil, err
 	}

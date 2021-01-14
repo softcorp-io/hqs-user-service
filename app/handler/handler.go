@@ -314,7 +314,9 @@ func (s *Handler) GetByEmail(ctx context.Context, req *userProto.User) (*userPro
 	s.zapLog.Info("Recieved new request")
 
 	// check that user is allowed to create
-	_, err := s.validateTokenHelper(ctx, &privilegeProto.Privilege{})
+	_, err := s.validateTokenHelper(ctx, &privilegeProto.Privilege{
+		ViewAllUsers: true,
+	})
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not validate token with err %v", err))
 		return &userProto.Response{}, err
@@ -350,7 +352,9 @@ func (s *Handler) GetAll(ctx context.Context, req *userProto.Request) (*userProt
 	s.zapLog.Info("Recieved new request")
 
 	// check that user is allowed to create
-	_, err := s.validateTokenHelper(ctx, &privilegeProto.Privilege{})
+	_, err := s.validateTokenHelper(ctx, &privilegeProto.Privilege{
+		ViewAllUsers: true,
+	})
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not validate token with err %v", err))
 		return &userProto.Response{}, err

@@ -187,6 +187,75 @@ func TestSingupWithToken(t *testing.T) {
 	assert.NotEqual(t, createUserPassword, userResponse.User.Password)
 }
 
+func TestSingupWithSpecificPrivilege(t *testing.T) {
+	// configure
+	mock.TruncateUsers()
+
+	seedName := "Seed User"
+	seedEmail := "seeduser@softcorp.io"
+	seedPassword := "RandomPassword1234"
+	seedPhone := "+45 88 88 88 88"
+	seedAllowView := true
+	seedAllowCreate := true
+	seedAllowPermission := true
+	seedAllowDelete := true
+	seedAllowBlock := true
+	seedAllowReset := true
+	seedBlocked := false
+	seedGender := false
+	_ = mock.Seed(seedName, seedEmail, seedPhone, seedPassword, seedAllowView, seedAllowCreate, seedAllowPermission, seedAllowDelete, seedAllowBlock, seedAllowReset, seedBlocked, seedGender)
+
+	ctx := context.Background()
+
+	tokenResponse, err := myHandler.Auth(ctx, &proto.User{
+		Email:    seedEmail,
+		Password: seedPassword,
+	})
+
+	assert.Equal(t, err, nil)
+	assert.NotEmpty(t, tokenResponse)
+
+	// build context with token
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	md := metadata.New(map[string]string{"token": tokenResponse.Token})
+	ctx = metadata.NewIncomingContext(ctx, md)
+
+	privID := "This is my ID!"
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{PrivilegeID: privID})
+
+	assert.Equal(t, nil, err)
+	assert.NotEmpty(t, singupToken)
+
+	// arrange
+
+	// build context with token
+	md = metadata.New(map[string]string{"token": singupToken.Token})
+	ctx = metadata.NewIncomingContext(ctx, md)
+
+	createUserName := "Token User"
+	createUserEmail := "tokenuser@softcorp.io"
+	createUserPassword := "RandomPassword1234"
+	createUserPhone := "4423423123"
+
+	// act
+	userResponse, err := myHandler.Signup(ctx, &proto.User{
+		Name:     createUserName,
+		Email:    createUserEmail,
+		Password: createUserPassword,
+		Phone:    createUserPhone,
+	})
+
+	// assert
+	assert.Equal(t, nil, err)
+	assert.NotEmpty(t, userResponse)
+	assert.Equal(t, createUserName, userResponse.User.Name)
+	assert.Equal(t, createUserEmail, userResponse.User.Email)
+	assert.Equal(t, createUserPhone, userResponse.User.Phone)
+	assert.Equal(t, privID, userResponse.User.PrivilegeID)
+	assert.NotEqual(t, createUserPassword, userResponse.User.Password)
+}
+
 func TestCannotUseSignupTokenTwice(t *testing.T) {
 	// configure
 	mock.TruncateUsers()

@@ -79,6 +79,22 @@ func (s *Handler) Create(ctx context.Context, req *userProto.User) (*userProto.R
 	// create user
 	resultUser := repository.MarshalUser(req)
 
+	// check that the requested prvilege actully exists
+	privilege, err := s.privilegeClient.Get(ctx, &privilegeProto.Privilege{
+		Id: req.PrivilegeID,
+	})
+	if err != nil {
+		s.zapLog.Error(fmt.Sprintf("Assigning default privilege. Could not find the specified privilege with err  %v", err))
+		privilege, err = s.privilegeClient.GetDefault(ctx, &privilegeProto.Request{})
+		if err != nil {
+			s.zapLog.Error("Could not get default privilege")
+			return &userProto.Response{}, err
+		}
+	}
+
+	// update user with privilege id
+	resultUser.PrivilegeID = privilege.Privilege.Id
+
 	if err := resultUser.Validate("password"); err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not validate user with err %v", err))
 		return &userProto.Response{}, err
@@ -91,6 +107,7 @@ func (s *Handler) Create(ctx context.Context, req *userProto.User) (*userProto.R
 	}
 
 	resultUser.Password = string(hashedPass)
+
 	if err := s.repository.Create(ctx, resultUser); err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not create with err %v", err))
 		return &userProto.Response{}, err
@@ -118,6 +135,22 @@ func (s *Handler) GenerateSignupToken(ctx context.Context, req *userProto.User) 
 		s.zapLog.Error(fmt.Sprintf("Could not validate token with err %v", err))
 		return &userProto.Token{}, err
 	}
+
+	// check that the requested prvilege actully exists
+	privilege, err := s.privilegeClient.Get(ctx, &privilegeProto.Privilege{
+		Id: req.PrivilegeID,
+	})
+	if err != nil {
+		s.zapLog.Error(fmt.Sprintf("Assigning default privilege. Could not find the specified privilege with err  %v", err))
+		privilege, err = s.privilegeClient.GetDefault(ctx, &privilegeProto.Request{})
+		if err != nil {
+			s.zapLog.Error("Could not get default privilege")
+			return &userProto.Token{}, err
+		}
+	}
+
+	// update user with privilege id
+	req.PrivilegeID = privilege.Privilege.Id
 
 	req.Id = uuid.NewV4().String()
 
@@ -171,15 +204,26 @@ func (s *Handler) Signup(ctx context.Context, req *userProto.User) (*userProto.R
 		return &userProto.Response{}, err
 	}
 
-	// set default values
-	defaultPrivResponse, err := s.privilegeClient.GetDefault(ctx, &privilegeProto.Request{})
+	// check that the requested prvilege actully exists
+	privilege, err := s.privilegeClient.Get(ctx, &privilegeProto.Privilege{
+		Id: userToken.PrivilegeID,
+	})
+	// else set default
 	if err != nil {
-		return &userProto.Response{}, err
+		s.zapLog.Error(fmt.Sprintf("Assigning default privilege. Could not find the specified privilege with err  %v", err))
+		privilege, err = s.privilegeClient.GetDefault(ctx, &privilegeProto.Request{})
+		if err != nil {
+			s.zapLog.Error("Could not get default privilege")
+			return &userProto.Response{}, err
+		}
 	}
+
+	// update user with privilege id
+	userToken.PrivilegeID = privilege.Privilege.Id
 
 	createUser.Password = string(hashedPass)
 	createUser.Id = userToken.Id
-	createUser.PrivilegeID = defaultPrivResponse.Privilege.Id
+	createUser.PrivilegeID = userToken.PrivilegeID
 
 	if err := s.repository.Signup(ctx, repository.MarshalUser(createUser)); err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not signup with err %v", err))
@@ -406,7 +450,7 @@ func (s *Handler) UpdatePrivileges(ctx context.Context, req *userProto.User) (*u
 		return &userProto.Response{}, errors.New("Root user is not updateable")
 	}
 
-	// check that the requested prvilege actully exusts
+	// check that the requested prvilege actully exists
 	privilege, err := s.privilegeClient.Get(ctx, &privilegeProto.Privilege{
 		Id: req.PrivilegeID,
 	})

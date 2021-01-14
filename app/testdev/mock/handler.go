@@ -3,6 +3,7 @@ package mock
 import (
 	"bytes"
 	"context"
+	"errors"
 	"os"
 	"time"
 
@@ -72,10 +73,12 @@ func (pc *privilegeClientMock) Update(ctx context.Context, req *privilegeProto.P
 
 func (pc *privilegeClientMock) Get(ctx context.Context, req *privilegeProto.Privilege, options ...grpc.CallOption) (*privilegeProto.Response, error) {
 	response := &privilegeProto.Response{}
-
 	if val, ok := pc.privileges[req.Id]; ok {
 		response.Privilege = val
 		return response, nil
+	}
+	if req.Id == "" {
+		return response, errors.New("No id in privilege")
 	}
 	pc.privileges[req.Id] = req
 	response.Privilege = req
@@ -85,7 +88,7 @@ func (pc *privilegeClientMock) Get(ctx context.Context, req *privilegeProto.Priv
 func (pc *privilegeClientMock) GetDefault(ctx context.Context, req *privilegeProto.Request, options ...grpc.CallOption) (*privilegeProto.Response, error) {
 	response := &privilegeProto.Response{}
 	response.Privilege = &privilegeProto.Privilege{
-		Id:                     uuid.NewV4().String(),
+		Id:                     "default",
 		Name:                   "Default",
 		ViewAllUsers:           false,
 		CreateUser:             false,
@@ -93,6 +96,9 @@ func (pc *privilegeClientMock) GetDefault(ctx context.Context, req *privilegePro
 		DeleteUser:             false,
 		BlockUser:              false,
 		SendResetPasswordEmail: false,
+	}
+	if _, ok := pc.privileges["default"]; !ok {
+		pc.privileges["default"] = response.Privilege
 	}
 	return response, nil
 }

@@ -287,9 +287,7 @@ func (s *Handler) GetByToken(ctx context.Context, req *userProto.Request) (*user
 	s.zapLog.Info("Recieved new request")
 
 	// check that user is allowed to create
-	actualUser, err := s.validateTokenHelper(ctx, &privilegeProto.Privilege{
-		CreateUser: true,
-	})
+	actualUser, err := s.validateTokenHelper(ctx, &privilegeProto.Privilege{})
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not validate token with err %v", err))
 		return &userProto.Response{}, err
@@ -316,9 +314,7 @@ func (s *Handler) GetByEmail(ctx context.Context, req *userProto.User) (*userPro
 	s.zapLog.Info("Recieved new request")
 
 	// check that user is allowed to create
-	_, err := s.validateTokenHelper(ctx, &privilegeProto.Privilege{
-		CreateUser: true,
-	})
+	_, err := s.validateTokenHelper(ctx, &privilegeProto.Privilege{})
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not validate token with err %v", err))
 		return &userProto.Response{}, err
@@ -354,9 +350,7 @@ func (s *Handler) GetAll(ctx context.Context, req *userProto.Request) (*userProt
 	s.zapLog.Info("Recieved new request")
 
 	// check that user is allowed to create
-	_, err := s.validateTokenHelper(ctx, &privilegeProto.Privilege{
-		CreateUser: true,
-	})
+	_, err := s.validateTokenHelper(ctx, &privilegeProto.Privilege{})
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not validate token with err %v", err))
 		return &userProto.Response{}, err

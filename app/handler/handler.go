@@ -87,7 +87,7 @@ func (s *Handler) Create(ctx context.Context, req *userProto.User) (*userProto.R
 		s.zapLog.Error(fmt.Sprintf("Assigning default privilege. Could not find the specified privilege with err  %v", err))
 		privilege, err = s.privilegeClient.GetDefault(ctx, &privilegeProto.Request{})
 		if err != nil {
-			s.zapLog.Error("Could not get default privilege")
+			s.zapLog.Error("Could not get default privilege.")
 			return &userProto.Response{}, err
 		}
 	}

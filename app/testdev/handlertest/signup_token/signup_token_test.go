@@ -221,8 +221,7 @@ func TestSingupWithSpecificPrivilege(t *testing.T) {
 	md := metadata.New(map[string]string{"token": tokenResponse.Token})
 	ctx = metadata.NewIncomingContext(ctx, md)
 
-	privID := "This is my ID!"
-	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{PrivilegeID: privID})
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{})
 
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, singupToken)
@@ -252,7 +251,7 @@ func TestSingupWithSpecificPrivilege(t *testing.T) {
 	assert.Equal(t, createUserName, userResponse.User.Name)
 	assert.Equal(t, createUserEmail, userResponse.User.Email)
 	assert.Equal(t, createUserPhone, userResponse.User.Phone)
-	assert.Equal(t, privID, userResponse.User.PrivilegeID)
+	assert.Equal(t, "default", userResponse.User.PrivilegeID)
 	assert.NotEqual(t, createUserPassword, userResponse.User.Password)
 }
 

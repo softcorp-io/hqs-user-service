@@ -77,7 +77,6 @@ type CustomClaims struct {
 type UserTokenIdentifier struct {
 	TokenID   string    `bson:"token_id" json:"token_id"`
 	UserID    string    `bson:"user_id" json:"user_id"`
-	Valid     bool      `bson:"valid" json:"valid"`
 	ExpiresAt time.Time `bson:"expires_at" json:"expires_at"`
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 }
@@ -86,7 +85,6 @@ type UserTokenIdentifier struct {
 type AuthIdentifier struct {
 	TokenID    string    `bson:"token_id" json:"token_id"`
 	UserID     string    `bson:"user_id" json:"user_id"`
-	Valid      bool      `bson:"valid" json:"valid"`
 	Longitude  float64   `bson:"longitude" json:"longitude"`
 	Latitude   float64   `bson:"latitude" json:"latitude"`
 	Device     string    `bson:"device" json:"device"`
@@ -205,7 +203,6 @@ func MarshalAuthIdentifier(authIdentifier *userProto.Auth) *AuthIdentifier {
 	return &AuthIdentifier{
 		TokenID:    authIdentifier.TokenID,
 		UserID:     authIdentifier.UserID,
-		Valid:      authIdentifier.Valid,
 		Longitude:  authIdentifier.Longitude,
 		Latitude:   authIdentifier.Latitude,
 		TypeOf:     authIdentifier.TypeOf,
@@ -224,7 +221,6 @@ func UnmarshalAuthIdentifier(authIdentifier *AuthIdentifier) *userProto.Auth {
 	return &userProto.Auth{
 		TokenID:    authIdentifier.TokenID,
 		UserID:     authIdentifier.UserID,
-		Valid:      authIdentifier.Valid,
 		Longitude:  authIdentifier.Longitude,
 		Latitude:   authIdentifier.Latitude,
 		TypeOf:     authIdentifier.TypeOf,
@@ -237,50 +233,26 @@ func UnmarshalAuthIdentifier(authIdentifier *AuthIdentifier) *userProto.Auth {
 
 // BlockToken - add BlockToken id to database, so the token cannot be used anymore
 func (srv *TokenService) BlockToken(ctx context.Context, tokenID string) error {
-	// update blocked token in database
-	updateToken := bson.M{
-		"$set": bson.M{
-			"valid": false,
-		},
-	}
-	_, err := srv.tokenCollection.UpdateOne(
-		ctx,
-		bson.M{"token_id": tokenID},
-		updateToken,
-	)
+	// delete token
+	_, err := srv.tokenCollection.DeleteOne(ctx, bson.M{"token_id": tokenID})
 	if err != nil {
 		return err
 	}
-	_, err = srv.authCollection.UpdateOne(
-		ctx,
-		bson.M{"token_id": tokenID},
-		updateToken,
-	)
+	// also delete from auth history
+	_, err = srv.authCollection.DeleteOne(ctx, bson.M{"token_id": tokenID})
 
 	return nil
 }
 
 // BlockAllUserToken - block all users tokens.
 func (srv *TokenService) BlockAllUserToken(ctx context.Context, userID string) error {
-	// update blocked token in database
-	updateToken := bson.M{
-		"$set": bson.M{
-			"valid": false,
-		},
-	}
-	_, err := srv.tokenCollection.UpdateMany(
-		ctx,
-		bson.M{"user_id": userID},
-		updateToken,
-	)
+	// delete all users tokens token
+	_, err := srv.tokenCollection.DeleteOne(ctx, bson.M{"user_id": userID})
 	if err != nil {
 		return err
 	}
-	_, err = srv.authCollection.UpdateMany(
-		ctx,
-		bson.M{"user_id": userID},
-		updateToken,
-	)
+	// also delete all users auth history
+	_, err = srv.authCollection.DeleteOne(ctx, bson.M{"user_id": userID})
 
 	return nil
 }
@@ -305,9 +277,6 @@ func (srv *TokenService) Decode(ctx context.Context, token string, key []byte) (
 	tokenIdentifier := UserTokenIdentifier{}
 	if err := srv.tokenCollection.FindOne(ctx, bson.M{"token_id": tokenType.Claims.(*CustomClaims).ID}).Decode(&tokenIdentifier); err != nil {
 		return nil, err
-	}
-	if tokenIdentifier.Valid != true {
-		return nil, errors.New("token is blocked and cannot be used")
 	}
 	// check if the token is expired and delete if it is
 	expirationTime := tokenIdentifier.ExpiresAt.Sub(time.Now()).Seconds()
@@ -348,7 +317,6 @@ func (srv *TokenService) Encode(ctx context.Context, user *userProto.User, key [
 	tokenIdentifier := UserTokenIdentifier{
 		TokenID:   id,
 		UserID:    user.Id,
-		Valid:     true,
 		ExpiresAt: time.Now().Add(expiresAt),
 		CreatedAt: time.Now(),
 	}
@@ -383,7 +351,7 @@ func (srv *TokenService) GetAuthHistory(ctx context.Context, user *userProto.Use
 		expirationTime := tempAuth.ExpiresAt.Sub(time.Now()).Seconds()
 		if expirationTime <= 0 {
 			srv.zapLog.Warn(fmt.Sprintf("Deleting auth history document due to expiration date with expiration time: %d", expirationTime))
-			_, _ = srv.tokenCollection.DeleteOne(ctx, bson.M{"token_id": tempAuth.TokenID})
+			go srv.tokenCollection.DeleteOne(ctx, bson.M{"token_id": tempAuth.TokenID})
 			continue
 		}
 		authHistory = append(authHistory, UnmarshalAuthIdentifier(&tempAuth))
@@ -392,7 +360,16 @@ func (srv *TokenService) GetAuthHistory(ctx context.Context, user *userProto.Use
 }
 
 // AddAuthToHistory - adds an authentication attempt to user history
-func (srv *TokenService) AddAuthToHistory(ctx context.Context, user *userProto.User, token string, valid bool, typeOf string, key []byte) error {
+func (srv *TokenService) AddAuthToHistory(ctx context.Context, user *userProto.User, token string, typeOf string, key []byte) error {
+	// only accept correct type
+	switch typeOf {
+	case "login":
+		break
+	case "resetpassword":
+		break
+	default:
+		return errors.New("Not a valid type")
+	}
 	// decode the token
 	claims, err := srv.Decode(ctx, token, key)
 	if err != nil {
@@ -440,7 +417,6 @@ func (srv *TokenService) AddAuthToHistory(ctx context.Context, user *userProto.U
 		Latitude:   latitude,
 		TokenID:    claims.ID,
 		Device:     deviceInformation,
-		Valid:      valid,
 		TypeOf:     typeOf,
 		CreatedAt:  time.Now(),
 		ExpiresAt:  time.Now().Add(authHistoryTTL),

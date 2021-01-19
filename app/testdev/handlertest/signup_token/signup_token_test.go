@@ -68,7 +68,7 @@ func TestGenerateSignupToken(t *testing.T) {
 	ctx = metadata.NewIncomingContext(ctx, md)
 
 	// act
-	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{})
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.Request{})
 
 	// assert
 	assert.Equal(t, nil, err)
@@ -113,7 +113,7 @@ func TestGenerateSignupTokenUnauthorized(t *testing.T) {
 	ctx = metadata.NewIncomingContext(ctx, md)
 
 	// act
-	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{})
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.Request{})
 
 	// assert
 	assert.Error(t, err)
@@ -154,7 +154,7 @@ func TestSingupWithToken(t *testing.T) {
 	md := metadata.New(map[string]string{"token": tokenResponse.Token})
 	ctx = metadata.NewIncomingContext(ctx, md)
 
-	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{})
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.Request{})
 
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, singupToken)
@@ -221,7 +221,7 @@ func TestSingupWithSpecificPrivilege(t *testing.T) {
 	md := metadata.New(map[string]string{"token": tokenResponse.Token})
 	ctx = metadata.NewIncomingContext(ctx, md)
 
-	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{})
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.Request{})
 
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, singupToken)
@@ -289,7 +289,7 @@ func TestCannotUseSignupTokenTwice(t *testing.T) {
 	md := metadata.New(map[string]string{"token": tokenResponse.Token})
 	ctx = metadata.NewIncomingContext(ctx, md)
 
-	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.User{})
+	singupToken, err := myHandler.GenerateSignupToken(ctx, &proto.Request{})
 
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, singupToken)

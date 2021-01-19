@@ -143,7 +143,7 @@ func TestBlockAllTokens(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 	// act 1
-	err = myService.AddAuthToHistory(context.Background(), &user, tokenOne, true, "auth", myService.GetUserCryptoKey())
+	err = myService.AddAuthToHistory(context.Background(), &user, tokenOne, "login", myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	tokenHistory, err := myService.GetAuthHistory(context.Background(), &user)
 
@@ -155,7 +155,7 @@ func TestBlockAllTokens(t *testing.T) {
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 
 	// act 2
-	err = myService.AddAuthToHistory(context.Background(), &user, tokenTwo, true, "auth", myService.GetUserCryptoKey())
+	err = myService.AddAuthToHistory(context.Background(), &user, tokenTwo, "login", myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	tokenHistory, err = myService.GetAuthHistory(context.Background(), &user)
 
@@ -177,9 +177,6 @@ func TestBlockAllTokens(t *testing.T) {
 	assert.Equal(t, 2, len(tokenHistory))
 	assert.Error(t, tokenOneErr)
 	assert.Error(t, tokenTwoErr)
-	for _, auth := range tokenHistory {
-		assert.False(t, auth.Valid)
-	}
 	// clean up
 	err = myService.DeleteUserAuthHistory(context.Background(), &user)
 	assert.Nil(t, err)
@@ -207,7 +204,7 @@ func TestGetAuthHistory(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 	// act 1
-	err = myService.AddAuthToHistory(context.Background(), &user, tokenOne, true, "auth", myService.GetUserCryptoKey())
+	err = myService.AddAuthToHistory(context.Background(), &user, tokenOne, "login", myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	tokenHistory, err := myService.GetAuthHistory(context.Background(), &user)
 
@@ -219,7 +216,7 @@ func TestGetAuthHistory(t *testing.T) {
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 
 	// act 2
-	err = myService.AddAuthToHistory(context.Background(), &user, tokenTwo, true, "auth", myService.GetUserCryptoKey())
+	err = myService.AddAuthToHistory(context.Background(), &user, tokenTwo, "login", myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	tokenHistory, err = myService.GetAuthHistory(context.Background(), &user)
 
@@ -258,7 +255,7 @@ func TestGetAuthHistoryExpiration(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 	// act 1
-	err = myService.AddAuthToHistory(context.Background(), &user, tokenOne, true, "auth", myService.GetUserCryptoKey())
+	err = myService.AddAuthToHistory(context.Background(), &user, tokenOne, "login", myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	tokenHistory, err := myService.GetAuthHistory(context.Background(), &user)
 
@@ -270,7 +267,7 @@ func TestGetAuthHistoryExpiration(t *testing.T) {
 	assert.Equal(t, tokenHistory[0].TokenID, claimsOne.ID)
 
 	// act 2
-	err = myService.AddAuthToHistory(context.Background(), &user, tokenTwo, true, "auth", myService.GetUserCryptoKey())
+	err = myService.AddAuthToHistory(context.Background(), &user, tokenTwo, "login", myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	tokenHistory, err = myService.GetAuthHistory(context.Background(), &user)
 
@@ -323,9 +320,9 @@ func TestAuthIndex(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 	// act
-	err = myService.AddAuthToHistory(context.Background(), &user, tokenOne, true, "auth", myService.GetUserCryptoKey())
+	err = myService.AddAuthToHistory(context.Background(), &user, tokenOne, "login", myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
-	err = myService.AddAuthToHistory(context.Background(), &user, tokenTwo, true, "auth", myService.GetUserCryptoKey())
+	err = myService.AddAuthToHistory(context.Background(), &user, tokenTwo, "login", myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	tokenHistory, err := myService.GetAuthHistory(context.Background(), &user)
 	assert.Equal(t, 2, len(tokenHistory))
@@ -398,7 +395,7 @@ func TestSetLatitudeLongitude(t *testing.T) {
 	md := metadata.New(map[string]string{"latitude": latitude, "longitude": longitude})
 	ctx := metadata.NewIncomingContext(context.Background(), md)
 
-	err = myService.AddAuthToHistory(ctx, &user, tokenOne, true, "auth", myService.GetUserCryptoKey())
+	err = myService.AddAuthToHistory(ctx, &user, tokenOne, "login", myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	tokenHistory, err := myService.GetAuthHistory(context.Background(), &user)
 
@@ -412,7 +409,7 @@ func TestSetLatitudeLongitude(t *testing.T) {
 	assert.Equal(t, tokenHistory[0].Longitude, 1.234)
 
 	// act 2
-	err = myService.AddAuthToHistory(context.Background(), &user, tokenTwo, true, "auth", myService.GetUserCryptoKey())
+	err = myService.AddAuthToHistory(context.Background(), &user, tokenTwo, "login", myService.GetUserCryptoKey())
 	assert.Equal(t, nil, err)
 	tokenHistory, err = myService.GetAuthHistory(context.Background(), &user)
 

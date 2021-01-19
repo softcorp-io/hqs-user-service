@@ -30,7 +30,7 @@ type authable interface {
 	BlockToken(ctx context.Context, tokenID string) error
 	BlockAllUserToken(ctx context.Context, userID string) error
 	GetAuthHistory(ctx context.Context, user *userProto.User) ([]*userProto.Auth, error)
-	AddAuthToHistory(ctx context.Context, user *userProto.User, token string, success bool, typeOf string, key []byte) error
+	AddAuthToHistory(ctx context.Context, user *userProto.User, token string, typeOf string, key []byte) error
 	DeleteUserAuthHistory(ctx context.Context, user *userProto.User) error
 	DeleteUserTokenHistory(ctx context.Context, user *userProto.User) error
 	GetResetPasswordCryptoKey() []byte
@@ -118,7 +118,7 @@ func (s *Handler) Create(ctx context.Context, req *userProto.User) (*userProto.R
 // GenerateSignupToken - generates a token another user can use to singup with. This token has
 // some values set. Specifically it needs AllowView, AllowCreate, AllowPermission & AllowDelete.
 // it uses a uuid, so that it can only be used once. Default expiration time is 3 days
-func (s *Handler) GenerateSignupToken(ctx context.Context, req *userProto.User) (*userProto.Token, error) {
+func (s *Handler) GenerateSignupToken(ctx context.Context, req *userProto.Request) (*userProto.Token, error) {
 	s.zapLog.Info("Recieved new request")
 
 	// check that user is allowed to create
@@ -130,9 +130,10 @@ func (s *Handler) GenerateSignupToken(ctx context.Context, req *userProto.User) 
 		return &userProto.Token{}, err
 	}
 
-	req.Id = uuid.NewV4().String()
-
-	token, err := s.crypto.Encode(context.Background(), req, s.crypto.GetUserCryptoKey(), s.crypto.GetSignupTokenTTL())
+	// encode user
+	encUser := &userProto.User{}
+	encUser.Id = uuid.NewV4().String()
+	token, err := s.crypto.Encode(context.Background(), encUser, s.crypto.GetUserCryptoKey(), s.crypto.GetSignupTokenTTL())
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not encode signup with err %v", err))
 		return &userProto.Token{}, err
@@ -720,8 +721,8 @@ func (s *Handler) Auth(ctx context.Context, req *userProto.User) (*userProto.Tok
 		return &userProto.Token{}, err
 	}
 
-	// todo: change longiture and lattitude
-	if err = s.crypto.AddAuthToHistory(ctx, repository.UnmarshalUser(user), token, true, "auth", s.crypto.GetUserCryptoKey()); err != nil {
+	// todo: change longitude and lattitude
+	if err = s.crypto.AddAuthToHistory(ctx, repository.UnmarshalUser(user), token, "login", s.crypto.GetUserCryptoKey()); err != nil {
 		s.zapLog.Warn(fmt.Sprintf("Could not add to auth history with err : %v", err))
 	}
 
@@ -793,7 +794,7 @@ func (s *Handler) EmailResetPasswordToken(ctx context.Context, req *userProto.Us
 	}
 
 	// todo: change longiture and lattitude
-	if err = s.crypto.AddAuthToHistory(ctx, repository.UnmarshalUser(resultUser), resetToken, true, "reset password", s.crypto.GetResetPasswordCryptoKey()); err != nil {
+	if err = s.crypto.AddAuthToHistory(ctx, repository.UnmarshalUser(resultUser), resetToken, "resetpassword", s.crypto.GetResetPasswordCryptoKey()); err != nil {
 		s.zapLog.Warn(fmt.Sprintf("Could not add to auth history with err : %v", err))
 	}
 

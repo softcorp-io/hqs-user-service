@@ -339,7 +339,7 @@ func (srv *TokenService) GetAuthHistory(ctx context.Context, user *userProto.Use
 	}
 
 	// Find all documents that includes the user_id
-	cursor, err := srv.authCollection.Find(ctx, bson.M{"user_id": user.Id})
+	cursor, err := srv.authCollection.Find(ctx, bson.M{"user_id": user.Id, "type_of": "login"})
 	if err != nil {
 		return []*userProto.Auth{}, err
 	}

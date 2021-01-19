@@ -174,7 +174,7 @@ func TestBlockAllTokens(t *testing.T) {
 	claimsTwo, tokenTwoErr := myService.Decode(context.Background(), tokenOne, myService.GetUserCryptoKey())
 
 	// assert 3
-	assert.Equal(t, 2, len(tokenHistory))
+	assert.Equal(t, 1, len(tokenHistory))
 	assert.Error(t, tokenOneErr)
 	assert.Error(t, tokenTwoErr)
 	// clean up

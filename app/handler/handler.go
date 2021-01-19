@@ -26,7 +26,7 @@ import (
 // authable - interface used to decode/encode tokens.
 type authable interface {
 	Decode(ctx context.Context, token string, key []byte) (*crypto.CustomClaims, error)
-	Encode(ctx context.Context, user *userProto.User, key []byte, expiresAt time.Duration) (string, error)
+	Encode(ctx context.Context, user *userProto.User, key []byte, expiresAt time.Duration) (string, string, error)
 	BlockToken(ctx context.Context, tokenID string) error
 	BlockAllUserToken(ctx context.Context, userID string) error
 	GetAuthHistory(ctx context.Context, user *userProto.User) ([]*userProto.Auth, error)
@@ -133,7 +133,7 @@ func (s *Handler) GenerateSignupToken(ctx context.Context, req *userProto.Reques
 	// encode user
 	encUser := &userProto.User{}
 	encUser.Id = uuid.NewV4().String()
-	token, err := s.crypto.Encode(context.Background(), encUser, s.crypto.GetUserCryptoKey(), s.crypto.GetSignupTokenTTL())
+	token, _, err := s.crypto.Encode(context.Background(), encUser, s.crypto.GetUserCryptoKey(), s.crypto.GetSignupTokenTTL())
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not encode signup with err %v", err))
 		return &userProto.Token{}, err
@@ -715,7 +715,7 @@ func (s *Handler) Auth(ctx context.Context, req *userProto.User) (*userProto.Tok
 		return &userProto.Token{}, err
 	}
 
-	token, err := s.crypto.Encode(context.Background(), repository.UnmarshalUser(user), s.crypto.GetUserCryptoKey(), s.crypto.GetUserTokenTTL())
+	token, id, err := s.crypto.Encode(context.Background(), repository.UnmarshalUser(user), s.crypto.GetUserCryptoKey(), s.crypto.GetUserTokenTTL())
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not encode user with err  %v", err))
 		return &userProto.Token{}, err
@@ -729,6 +729,7 @@ func (s *Handler) Auth(ctx context.Context, req *userProto.User) (*userProto.Tok
 	// return result
 	res := &userProto.Token{}
 	res.Token = token
+	res.Id = id
 
 	return res, nil
 }
@@ -787,7 +788,7 @@ func (s *Handler) EmailResetPasswordToken(ctx context.Context, req *userProto.Us
 	}
 
 	// generate token
-	resetToken, err := s.crypto.Encode(context.Background(), req, s.crypto.GetResetPasswordCryptoKey(), s.crypto.GetResetPasswordTokenTTL())
+	resetToken, _, err := s.crypto.Encode(context.Background(), req, s.crypto.GetResetPasswordCryptoKey(), s.crypto.GetResetPasswordTokenTTL())
 	if err != nil {
 		s.zapLog.Error(fmt.Sprintf("Could not encode reset password with err %v", err))
 		return &userProto.Response{}, err

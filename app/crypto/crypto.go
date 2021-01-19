@@ -302,7 +302,7 @@ func (srv *TokenService) Decode(ctx context.Context, token string, key []byte) (
 }
 
 // Encode - encodes a claim into a JWT
-func (srv *TokenService) Encode(ctx context.Context, user *userProto.User, key []byte, expiresAt time.Duration) (string, error) {
+func (srv *TokenService) Encode(ctx context.Context, user *userProto.User, key []byte, expiresAt time.Duration) (string, string, error) {
 	// Create the Claims
 	id := uuid.NewV4().String()
 	claims := CustomClaims{
@@ -322,13 +322,17 @@ func (srv *TokenService) Encode(ctx context.Context, user *userProto.User, key [
 	}
 	_, err := srv.tokenCollection.InsertOne(ctx, &tokenIdentifier)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	// Create token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 
 	// Sign token and return
-	return token.SignedString(key)
+	returnToken, err := token.SignedString(key)
+	if err != nil {
+		return "", "", err
+	}
+	return returnToken, id, nil
 }
 
 // GetAuthHistory - returns a users auth history

@@ -45,7 +45,7 @@ func TestEncoderDecoder(t *testing.T) {
 	password := "Tester1235123"
 
 	// act
-	token, errEncode := myService.Encode(context.Background(), &proto.User{
+	token, _, errEncode := myService.Encode(context.Background(), &proto.User{
 		Name:     name,
 		Email:    email,
 		Password: password,
@@ -72,7 +72,7 @@ func TestEncoderDecoderTokenExpiration(t *testing.T) {
 	password := "Tester1235123"
 
 	// act
-	token, errEncode := myService.Encode(context.Background(), &proto.User{
+	token, _, errEncode := myService.Encode(context.Background(), &proto.User{
 		Name:     name,
 		Email:    email,
 		Password: password,
@@ -96,7 +96,7 @@ func TestBlockToken(t *testing.T) {
 	password := "Tester1235123"
 
 	// arrange
-	token, errEncode := myService.Encode(context.Background(), &proto.User{
+	token, _, errEncode := myService.Encode(context.Background(), &proto.User{
 		Name:     name,
 		Email:    email,
 		Password: password,
@@ -136,10 +136,10 @@ func TestBlockAllTokens(t *testing.T) {
 	}
 
 	// arrange
-	tokenOne, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	tokenOne, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	tokenTwo, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	tokenTwo, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	// act 1
@@ -197,10 +197,10 @@ func TestGetAuthHistory(t *testing.T) {
 	}
 
 	// arrange
-	tokenOne, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	tokenOne, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	tokenTwo, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	tokenTwo, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	// act 1
@@ -248,10 +248,10 @@ func TestGetAuthHistoryExpiration(t *testing.T) {
 	}
 
 	// arrange
-	tokenOne, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	tokenOne, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	tokenTwo, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	tokenTwo, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	// act 1
@@ -313,10 +313,10 @@ func TestAuthIndex(t *testing.T) {
 	}
 
 	// arrange
-	tokenOne, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	tokenOne, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	tokenTwo, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	tokenTwo, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	// act
@@ -350,10 +350,10 @@ func TestTokenIndex(t *testing.T) {
 	}
 
 	// configure
-	_, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	_, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	_, err = myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	_, _, err = myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	cursor, err := mongoTokenCollection.Find(context.TODO(), bson.M{})
@@ -382,10 +382,10 @@ func TestSetLatitudeLongitude(t *testing.T) {
 	}
 
 	// arrange
-	tokenOne, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	tokenOne, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
-	tokenTwo, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
+	tokenTwo, _, err := myService.Encode(context.Background(), &user, myService.GetUserCryptoKey(), myService.GetUserTokenTTL())
 	assert.Equal(t, nil, err)
 
 	// act 1
